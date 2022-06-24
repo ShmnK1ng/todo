@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Todo</string>
     <string name="todotext">Текст заметки...</string>
     <string name="tv_secondActivity">Текст заметки...</string>
 </resources>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="grid_constrainLayout_padding">16dp</dimen>
+    <dimen name="CardCornerRadius">2dp</dimen>
+    <dimen name="CardElevation">10dp</dimen>
+    <dimen name="CardView_Padding">10dp</dimen>
+    <dimen name="SecondActivity_marginStart">8dp</dimen>
+    <dimen name="SecondActivity_marginTop">8dp</dimen>
+    <dimen name="SecondActivity_MarginEnd">8dp</dimen>
+</resources>

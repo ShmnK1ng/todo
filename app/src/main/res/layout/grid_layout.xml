@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="16dp">
+    android:padding="@dimen/grid_constrainLayout_padding">
 
 
     <androidx.cardview.widget.CardView
@@ -12,10 +12,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="visible"
-        app:cardBackgroundColor="#2196F3"
-        app:cardCornerRadius="2dp"
-        app:cardElevation="10dp"
-        app:contentPadding="10dp"
+        app:cardBackgroundColor="@color/cardView_color"
+        app:cardCornerRadius="@dimen/CardCornerRadius"
+        app:cardElevation="@dimen/CardElevation"
+        app:contentPadding="@dimen/CardView_Padding"
         tools:ignore="MissingConstraints"
         tools:layout_editor_absoluteX="16dp"
         tools:layout_editor_absoluteY="16dp">
