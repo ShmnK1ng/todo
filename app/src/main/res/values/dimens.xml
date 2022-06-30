@@ -7,4 +7,11 @@
     <dimen name="SecondActivity_marginStart">8dp</dimen>
     <dimen name="SecondActivity_marginTop">8dp</dimen>
     <dimen name="SecondActivity_MarginEnd">8dp</dimen>
+    <dimen name="et_marginTop">56dp</dimen>
+    <dimen name="cb_width">66dp</dimen>
+    <dimen name="cb_height">54dp</dimen>
+    <dimen name="ib_width">48dp</dimen>
+    <dimen name="ib_height">48dp</dimen>
+    <dimen name="ib_marginEnd">4dp</dimen>
+    <dimen name="et_minHeight">48dp</dimen>
 </resources>

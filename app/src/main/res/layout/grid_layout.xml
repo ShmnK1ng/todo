@@ -1,29 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:padding="@dimen/grid_constrainLayout_padding">
 
-
     <androidx.cardview.widget.CardView
         android:id="@+id/gridlayout"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:visibility="visible"
         app:cardBackgroundColor="@color/cardView_color"
         app:cardCornerRadius="@dimen/CardCornerRadius"
         app:cardElevation="@dimen/CardElevation"
         app:contentPadding="@dimen/CardView_Padding"
-        tools:ignore="MissingConstraints"
-        tools:layout_editor_absoluteX="16dp"
-        tools:layout_editor_absoluteY="16dp">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="MissingConstraints">
 
         <TextView
             android:id="@+id/tv_text_item"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/todotext" />
+            android:text="@string/todo_text"
+            android:textColor="@color/text_Color" />
     </androidx.cardview.widget.CardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

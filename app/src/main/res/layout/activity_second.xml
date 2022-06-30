@@ -1,20 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".SecondActivity">
 
-    <TextView
-        android:id="@+id/tv_secondActivity"
-        android:layout_width="match_parent"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/SecondActivity_marginStart"
-        android:layout_marginTop="@dimen/SecondActivity_marginTop"
-        android:layout_marginEnd="@dimen/SecondActivity_MarginEnd"
-        android:text="@string/tv_secondActivity"
+        android:background="?attr/colorPrimary"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:menu="@menu/todo_menu"
+        app:title="@string/title"
+        app:titleTextColor="@color/white"
+        tools:ignore="MissingConstraints" />
+
+    <EditText
+        android:id="@+id/et_text"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:hint="@string/todo_text"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:minHeight="@dimen/et_minHeight"
+        android:textColorHint="@color/hint_color"
+        android:gravity="top"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
