@@ -1,6 +1,8 @@
 package com.example.myapplication;
+
 import android.view.View;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -13,8 +15,10 @@ public class TodoViewHolder extends RecyclerView.ViewHolder {
         TextViewItem = itemView.findViewById(R.id.tv_text_item);
 
     }
-    public void bind (Todo todo) {
+
+    public void bind(Todo todo) {
         TextViewItem.setText(todo.getTodoText());
 
     }
+
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -26,12 +25,12 @@
         android:id="@+id/et_text"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:gravity="top"
         android:hint="@string/todo_text"
         android:importantForAutofill="no"
         android:inputType="text"
         android:minHeight="@dimen/et_minHeight"
         android:textColorHint="@color/hint_color"
-        android:gravity="top"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
