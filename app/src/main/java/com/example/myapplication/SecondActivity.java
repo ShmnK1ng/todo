@@ -1,12 +1,13 @@
 package com.example.myapplication;
+
 import static com.example.myapplication.MainActivity.ITEM;
 import static com.example.myapplication.MainActivity.Send_Text;
-import androidx.annotation.NonNull;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
+
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.widget.EditText;
 
 
@@ -14,22 +15,17 @@ public class SecondActivity extends AppCompatActivity {
 
     private Todo todo;
     private EditText editText;
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.todo_menu, menu);
-        return true;
-    }
-
+    private ActionMenuItemView toolbar_button;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_second);
         this.editText = findViewById(R.id.et_text);
+        this.toolbar_button = findViewById(R.id.toolbar_button);
         this.todo = getIntent().getParcelableExtra(ITEM);
         editText.setText(todo.getTodoText());
-
+        addOnButtonClickListener();
     }
 
     private void sendTextItem() {
@@ -39,15 +35,13 @@ public class SecondActivity extends AppCompatActivity {
         finish();
     }
 
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.toolbar_button) {
+    private void addOnButtonClickListener() {
+        toolbar_button.setOnClickListener(view -> {
             String textEntered = editText.getText().toString();
             todo.setTodoText(textEntered);
             sendTextItem();
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
+        });
+
     }
 
 }
