@@ -6,6 +6,5 @@
         android:actionLayout="@layout/activity_second"
         android:icon="@drawable/ic_baseline_check_circle_outline_24"
         android:title="@string/toolbar_button"
-        android:onClick="onOptionsItemSelected"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

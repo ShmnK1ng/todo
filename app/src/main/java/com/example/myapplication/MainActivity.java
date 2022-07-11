@@ -26,11 +26,8 @@ public class MainActivity extends AppCompatActivity {
     ActivityResultLauncher<Intent> getNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
 
-                if (result.getResultCode() == Activity.RESULT_OK) {
-                    Todo todoEnteredText = null;
-                    if (result.getData() != null) {
-                        todoEnteredText = result.getData().getParcelableExtra(Send_Text);
-                    }
+                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
+                    Todo todoEnteredText = result.getData().getParcelableExtra(Send_Text);
                     int itemPosition = todoList.indexOf(todoEnteredText);
                     todoList.set(itemPosition, todoEnteredText);
                     todoAdapter.notifyItemChanged(itemPosition);
