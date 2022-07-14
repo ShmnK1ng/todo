@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Todo</string>
-    <string name="todo_text">Текст заметки...</string>
-    <string name="tv_secondActivity">Текст заметки...</string>
-    <string name="todo">TODO</string>
-    <string name="title">TodoApp</string>
-    <string name="toolbar_button">Item</string>
+    <string name="item_todolist_text">Note text</string>
+    <string name="menu_button">Item</string>
+    <string name="activity_todo_list_title">activity_todolist_title</string>
+    <string name="activity_todoTextNote_title">TodoApp</string>
+    <string name="activity_todoTextNote_editText_hint">activity_todoTextNote_editText_hint</string>
 </resources>

@@ -8,16 +8,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class TodoViewHolder extends RecyclerView.ViewHolder {
 
-    public TextView TextViewItem;
+    public TextView textViewItem;
 
     public TodoViewHolder(@NonNull View itemView) {
         super(itemView);
-        TextViewItem = itemView.findViewById(R.id.tv_text_item);
+        textViewItem = itemView.findViewById(R.id.item_todolist_text);
 
     }
 
     public void bind(Todo todo) {
-        TextViewItem.setText(todo.getTodoText());
+        textViewItem.setText(todo.getTodoText());
 
     }
 

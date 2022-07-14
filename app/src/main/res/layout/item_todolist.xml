@@ -4,16 +4,16 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/grid_constrainLayout_padding">
+    android:padding="@dimen/item_todolist_padding">
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/gridlayout"
-        android:layout_width="0dp"
+        android:id="@+id/item_todolist_card"
+        android:layout_width="@dimen/item_todolist_card_width"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/cardView_color"
-        app:cardCornerRadius="@dimen/CardCornerRadius"
-        app:cardElevation="@dimen/CardElevation"
-        app:contentPadding="@dimen/CardView_Padding"
+        app:cardBackgroundColor="@color/item_todolist_card_color"
+        app:cardCornerRadius="@dimen/item_todolist_cardCornerRadius"
+        app:cardElevation="@dimen/item_todolist_сardElevation"
+        app:contentPadding="@dimen/item_todolist_сardPadding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -21,11 +21,11 @@
         tools:ignore="MissingConstraints">
 
         <TextView
-            android:id="@+id/tv_text_item"
+            android:id="@+id/item_todolist_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/todo_text"
-            android:textColor="@color/text_Color" />
+            android:text="@string/item_todolist_text"
+            android:textColor="@color/item_todolist_text_color" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

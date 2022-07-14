@@ -3,10 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context=".TodoTextNoteActivity">
 
     <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar3"
+        android:id="@+id/activity_todoTextNote_toolbar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="?attr/colorPrimary"
@@ -15,16 +16,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:title="@string/title"
+        app:menu="@menu/todo_menu"
+        app:title="@string/activity_todoTextNote_title"
         app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_todo"
+    <EditText
+        android:id="@+id/activity_todoTextNote_editText"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:gravity="top"
+        android:hint="@string/activity_todoTextNote_editText_hint"
+        android:importantForAutofill="no"
+        android:inputType="text"
+        android:minHeight="@dimen/activity_todoTextNote_editText_minHeight"
+        android:textColorHint="@color/activity_todoTextNote_editText_hint_color"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/toolbar3" />
+        app:layout_constraintTop_toBottomOf="@+id/activity_todoTextNote_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

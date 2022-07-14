@@ -1,17 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="grid_constrainLayout_padding">16dp</dimen>
-    <dimen name="CardCornerRadius">2dp</dimen>
-    <dimen name="CardElevation">10dp</dimen>
-    <dimen name="CardView_Padding">10dp</dimen>
-    <dimen name="SecondActivity_marginStart">8dp</dimen>
-    <dimen name="SecondActivity_marginTop">8dp</dimen>
-    <dimen name="SecondActivity_MarginEnd">8dp</dimen>
-    <dimen name="et_marginTop">56dp</dimen>
-    <dimen name="cb_width">66dp</dimen>
-    <dimen name="cb_height">54dp</dimen>
-    <dimen name="ib_width">48dp</dimen>
-    <dimen name="ib_height">48dp</dimen>
-    <dimen name="ib_marginEnd">4dp</dimen>
-    <dimen name="et_minHeight">48dp</dimen>
+    <dimen name="item_todolist_padding">16dp</dimen>
+    <dimen name="item_todolist_cardCornerRadius">2dp</dimen>
+    <dimen name="item_todolist_сardElevation">10dp</dimen>
+    <dimen name="item_todolist_сardPadding">10dp</dimen>
+    <dimen name="activity_todoTextNote_editText_minHeight">48dp</dimen>
+    <dimen name="activity_todo_list_recyclerview_width">0dp</dimen>
+    <dimen name="activity_todo_list_toolbar_width">0dp</dimen>
+    <dimen name="item_todolist_card_width">0dp</dimen>
+
 </resources>
