@@ -21,7 +21,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_text_note);
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         this.todo = getIntent().getParcelableExtra(EXTRA_TODO);
-        editText.setText(todo.getTodo_text());
+        editText.setText(todo.getTodoText());
         addOnButtonClickListener();
     }
 
@@ -36,7 +36,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setOnMenuItemClickListener(item -> {
             String textEntered = editText.getText().toString();
-            todo.setTodo_text(textEntered);
+            todo.setTodoText(textEntered);
             sendTextItem();
             return true;
 

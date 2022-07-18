@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="item_todo_padding">16dp</dimen>
-    <dimen name="item_todo_cardCornerRadius">2dp</dimen>
-    <dimen name="item_todo_сardElevation">10dp</dimen>
-    <dimen name="item_todo_сardPadding">10dp</dimen>
+    <dimen name="item_todo_card_corner_radius">2dp</dimen>
+    <dimen name="item_todo_сard_elevation">10dp</dimen>
+    <dimen name="item_todo_сard_padding">10dp</dimen>
     <dimen name="activity_todo_text_note_edit_text">0dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_width">0dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_height">0dp</dimen>
-    <dimen name="activity_todo_text_note_edit_text_minHeight">48dp</dimen>
+    <dimen name="activity_todo_text_note_edit_text_min_height">48dp</dimen>
     <dimen name="activity_todo_list_recyclerview_width">0dp</dimen>
     <dimen name="activity_todo_list_toolbar_width">0dp</dimen>
     <dimen name="item_todo_card_width">0dp</dimen>

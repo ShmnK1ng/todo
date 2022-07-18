@@ -17,7 +17,7 @@ public class TodoViewHolder extends RecyclerView.ViewHolder {
     }
 
     public void bind(Todo todo) {
-        textViewItem.setText(todo.getTodo_text());
+        textViewItem.setText(todo.getTodoText());
 
     }
 

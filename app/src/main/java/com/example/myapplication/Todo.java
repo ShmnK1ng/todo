@@ -8,21 +8,21 @@ import java.util.Objects;
 
 public class Todo implements Parcelable {
 
-    private String todo_text;
+    private String todoText;
     private final String uid;
 
-    public Todo(String uid, String todo_text) {
+    public Todo(String uid, String todoText) {
 
-        this.todo_text = todo_text;
+        this.todoText = todoText;
         this.uid = uid;
     }
 
-    public String getTodo_text() {
-        return this.todo_text;
+    public String getTodoText() {
+        return this.todoText;
     }
 
-    public void setTodo_text(String todo_text) {
-        this.todo_text = todo_text;
+    public void setTodoText(String todo_text) {
+        this.todoText = todo_text;
     }
 
     @Override
@@ -33,7 +33,7 @@ public class Todo implements Parcelable {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(uid);
-        parcel.writeString(todo_text);
+        parcel.writeString(todoText);
 
     }
 

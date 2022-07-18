@@ -29,7 +29,7 @@
         android:hint="@string/activity_todo_text_note_edit_text_hint"
         android:importantForAutofill="no"
         android:inputType="text"
-        android:minHeight="@dimen/activity_todo_text_note_edit_text_minHeight"
+        android:minHeight="@dimen/activity_todo_text_note_edit_text_min_height"
         android:textColorHint="@color/activity_todo_text_note_edit_text_hint_color"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
