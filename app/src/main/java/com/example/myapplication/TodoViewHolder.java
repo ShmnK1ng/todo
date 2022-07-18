@@ -12,12 +12,12 @@ public class TodoViewHolder extends RecyclerView.ViewHolder {
 
     public TodoViewHolder(@NonNull View itemView) {
         super(itemView);
-        textViewItem = itemView.findViewById(R.id.item_todolist_text);
+        textViewItem = itemView.findViewById(R.id.item_todo_text);
 
     }
 
     public void bind(Todo todo) {
-        textViewItem.setText(todo.getTodoText());
+        textViewItem.setText(todo.getTodo_text());
 
     }
 

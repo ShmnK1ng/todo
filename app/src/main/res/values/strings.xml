@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Todo</string>
-    <string name="item_todolist_text">Note text</string>
+    <string name="item_todo_text">Note text</string>
     <string name="menu_button">Item</string>
-    <string name="activity_todo_list_title">activity_todolist_title</string>
-    <string name="activity_todoTextNote_title">TodoApp</string>
-    <string name="activity_todoTextNote_editText_hint">activity_todoTextNote_editText_hint</string>
+    <string name="activity_todo_list_title">TodoApp</string>
+    <string name="activity_todo_text_note_title">TodoApp</string>
+    <string name="activity_todo_text_note_edit_text_hint">Note text</string>
 </resources>

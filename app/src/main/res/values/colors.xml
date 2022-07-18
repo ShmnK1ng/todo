@@ -7,7 +7,7 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="item_todolist_card_color">#2196F3</color>
-    <color name="activity_todoTextNote_editText_hint_color">#546E7A</color>
-    <color name="item_todolist_text_color">#212121</color>
+    <color name="item_todo_card_color">#2196F3</color>
+    <color name="activity_todo_text_note_edit_text_hint_color">#546E7A</color>
+    <color name="item_todo_text_color">#212121</color>
 </resources>
