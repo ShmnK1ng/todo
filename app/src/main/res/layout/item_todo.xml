@@ -10,7 +10,8 @@
         android:id="@+id/item_todo_card"
         android:layout_width="@dimen/item_todo_card_width"
         android:layout_height="wrap_content"
-        app:cardBackgroundColor="@color/item_todo_card_color"
+        android:foreground="@drawable/bg"
+        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/item_todo_card_corner_radius"
         app:cardElevation="@dimen/item_todo_сard_elevation"
         app:contentPadding="@dimen/item_todo_сard_padding"
@@ -24,6 +25,8 @@
             android:id="@+id/item_todo_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="100"
+            android:minLines="5"
             android:text="@string/item_todo_text"
             android:textColor="@color/item_todo_text_color" />
     </androidx.cardview.widget.CardView>

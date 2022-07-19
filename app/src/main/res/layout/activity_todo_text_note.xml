@@ -17,6 +17,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:menu="@menu/todo_menu"
+        app:navigationIcon="@drawable/ic_baseline_arrow_back_24"
         app:title="@string/activity_todo_text_note_title"
         app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" />
