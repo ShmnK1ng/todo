@@ -1,15 +1,18 @@
 package com.example.myapplication;
 
 import static com.example.myapplication.TodoListActivity.EXTRA_TODO;
-import static com.example.myapplication.TodoListActivity.REMOVE_TODO;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.EditText;
+
+import java.util.UUID;
 
 
 public class TodoTextNoteActivity extends AppCompatActivity {
@@ -22,9 +25,10 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
-        getIntent().getParcelableExtra(EXTRA_TODO);
         this.todo = getIntent().getParcelableExtra(EXTRA_TODO);
-        editText.setText(todo.getTodoText());
+        if (todo != null) {
+            editText.setText(todo.getTodoText());
+        }
         addOnButtonClickListener();
         addNavigationClickListener();
     }
@@ -40,26 +44,29 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setOnMenuItemClickListener(item -> {
             String textEntered = editText.getText().toString();
             if (textEntered.length() == 0) {
-                AlertDialog alertDialog = new AlertDialog.Builder(TodoTextNoteActivity.this).create();
-                alertDialog.setTitle("Error");
-                alertDialog.setMessage("Enter note text");
-                alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "Ok",
-                        (dialogInterface, i) -> dialogInterface.dismiss()
-                );
-                alertDialog.show();
-            }else {
-                todo.setTodoText(textEntered);
+                todoNoteAlertdialog();
+            } else {
+                if (todo == null) {
+                    String uid = UUID.randomUUID().toString();
+                    todo = new Todo(uid, textEntered);
+                } else todo.setTodoText(textEntered);
                 sendTextItem();
             }
             return true;
         });
     }
+
     private void addNavigationClickListener() {
-        ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> {
-            Intent backToTodoListActivity = new Intent(this, TodoListActivity.class);
-            backToTodoListActivity.putExtra(REMOVE_TODO, todo);
-            setResult(RESULT_CANCELED, backToTodoListActivity);
-            finish();
-        });
+        ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> finish());
+    }
+
+    private void todoNoteAlertdialog() {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(R.string.activity_todo_text_note_dialog_title);
+        alertDialog.setMessage(getString(R.string.activity_todo_text_note_dialog_message));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
+                (dialogInterface, i) -> dialogInterface.dismiss()
+        );
+        alertDialog.show();
     }
 }

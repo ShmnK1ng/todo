@@ -5,4 +5,8 @@
     <string name="activity_todo_list_title">Todo App</string>
     <string name="activity_todo_text_note_title">Add Todo</string>
     <string name="activity_todo_text_note_edit_text_hint">Note text</string>
+    <string name="activity_todo_text_note_dialog_title">Error</string>
+    <string name="activity_todo_text_note_dialog_message">Note text</string>
+    <string name="activity_todo_text_note_dialog_button_tittle">OK</string>
+
 </resources>

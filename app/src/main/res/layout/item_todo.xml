@@ -10,10 +10,8 @@
         android:id="@+id/item_todo_card"
         android:layout_width="@dimen/item_todo_card_width"
         android:layout_height="wrap_content"
-        android:foreground="@drawable/bg"
-        app:cardBackgroundColor="@color/white"
         app:cardCornerRadius="@dimen/item_todo_card_corner_radius"
-        app:cardElevation="@dimen/item_todo_сard_elevation"
+        app:cardUseCompatPadding="true"
         app:contentPadding="@dimen/item_todo_сard_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -25,10 +23,9 @@
             android:id="@+id/item_todo_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:maxLines="100"
-            android:minLines="5"
             android:text="@string/item_todo_text"
-            android:textColor="@color/item_todo_text_color" />
+            android:textColor="@color/item_todo_text_color"
+            android:textSize="@dimen/item_todo_text_size" />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

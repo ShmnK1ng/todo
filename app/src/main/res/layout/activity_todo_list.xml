@@ -23,6 +23,9 @@
         android:id="@+id/activity_todo_list_recyclerview"
         android:layout_width="@dimen/activity_todo_list_recyclerview_width"
         android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_todolist_padding_left"
+        android:paddingTop="@dimen/activity_todolist_padding_top"
+        android:paddingRight="@dimen/activity_todolist_padding_right"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/activity_todo_list_toolbar" />
