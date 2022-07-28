@@ -10,4 +10,5 @@
     <color name="activity_todo_text_note_edit_text_hint_color">@color/black</color>
     <color name="item_todo_text_color">@color/black</color>
     <color name="activity_todo_list_add_note_button_color">#F2994A</color>
+    <color name="activity_todo_list_add_note_button_color_pressed">#F2994A</color>
 </resources>

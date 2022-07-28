@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="item_todo_padding">4dp</dimen>
+    <dimen name="item_todo_margin">4dp</dimen>
     <dimen name="item_todo_card_corner_radius">1dp</dimen>
     <dimen name="item_todo_сard_padding">8dp</dimen>
     <dimen name="activity_todo_text_note_edit_text">0dp</dimen>
@@ -13,11 +13,13 @@
     <dimen name="activity_todolist_padding_top">12dp</dimen>
     <dimen name="activity_todo_text_note_text_size">14sp</dimen>
     <dimen name="item_todo_text_size">14sp</dimen>
-    <dimen name="activity_todolist_padding_left">12dp</dimen>
-    <dimen name="activity_todolist_padding_right">12dp</dimen>
+    <dimen name="activity_todolist_padding_start">12dp</dimen>
+    <dimen name="activity_todolist_padding_end">12dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_padding_top">8dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_padding_start">16dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_padding_end">16dp</dimen>
     <dimen name="item_todo_text_padding">8dp</dimen>
+    <dimen name="activity_todo_list_add_note_button_margin_end">16dp</dimen>
+    <dimen name="activity_todo_list_add_note_button_margin_bottom">8dp</dimen>
 
 </resources>
