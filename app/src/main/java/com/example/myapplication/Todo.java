@@ -8,8 +8,22 @@ import java.util.Objects;
 
 public class Todo implements Parcelable {
 
-    private String todoText;
+    public static final Parcelable.Creator<Todo> CREATOR = new Parcelable.Creator<Todo>() {
+
+        @Override
+        public Todo createFromParcel(Parcel parcel) {
+            String uid = parcel.readString();
+            String todo_text = parcel.readString();
+            return new Todo(uid, todo_text);
+        }
+
+        @Override
+        public Todo[] newArray(int i) {
+            return new Todo[i];
+        }
+    };
     private final String uid;
+    private String todoText;
 
     public Todo(String uid, String todoText) {
 
@@ -36,21 +50,6 @@ public class Todo implements Parcelable {
         parcel.writeString(todoText);
 
     }
-
-    public static final Parcelable.Creator<Todo> CREATOR = new Parcelable.Creator<Todo>() {
-
-        @Override
-        public Todo createFromParcel(Parcel parcel) {
-            String uid = parcel.readString();
-            String todo_text = parcel.readString();
-            return new Todo(uid, todo_text);
-        }
-
-        @Override
-        public Todo[] newArray(int i) {
-            return new Todo[i];
-        }
-    };
 
     @Override
     public boolean equals(Object o) {
