@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,7 @@ import java.util.ArrayList;
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
     private final OnTodoItemClickListener onClickListener;
-    private final ArrayList<Todo> todoList;
+    private ArrayList<Todo> todoList;
 
     public TodoAdapter(OnTodoItemClickListener onClickListener, ArrayList<Todo> todoList) {
 
@@ -47,6 +48,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
     public interface OnTodoItemClickListener {
         void OnItemClick(Todo todo);
+    }
+
+    @SuppressLint("NotifyDataSetChanged")
+    public void refreshTodoList(ArrayList<Todo> todoList) {
+        this.todoList = todoList;
+        notifyDataSetChanged();
     }
 
 }
