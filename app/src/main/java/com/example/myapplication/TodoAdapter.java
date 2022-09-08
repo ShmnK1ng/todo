@@ -55,5 +55,4 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         this.todoList = todoList;
         notifyDataSetChanged();
     }
-
 }

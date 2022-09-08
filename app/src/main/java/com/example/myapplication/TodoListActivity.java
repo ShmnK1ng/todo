@@ -1,23 +1,21 @@
 package com.example.myapplication;
+
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
+
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-import java.util.ArrayList;
-
 
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
-    private Todo todo;
 
     @SuppressLint("NotifyDataSetChanged")
     ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
@@ -27,20 +25,20 @@ public class TodoListActivity extends AppCompatActivity {
                 }
             });
 
-    TodoAdapter.OnTodoItemClickListener todoClickListener = todo -> {
-        this.todo = todo;
-        viewModel.onTodoItemClickState();
-    };
+    TodoAdapter.OnTodoItemClickListener todoClickListener = todo -> viewModel.onTodoItemClicked(todo);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list);
         this.viewModel = new ViewModelProvider(this).get(TodoListViewModel.class);
-        final Observer<ArrayList<Todo>> todoListObserver = todos -> todoAdapter.refreshTodoList(todos);
-        final Observer<Boolean> onButtonClickStateObserver = aBoolean -> startActivity();
-        viewModel.getOnClickState().observe(this, onButtonClickStateObserver);
-        viewModel.getTodoList().observe(this, todoListObserver);
+        viewModel.getTodoList().observe(this, todos -> todoAdapter.refreshTodoList(todos));
+        viewModel.OnItemClickEvent().observe(this, aBoolean -> {
+            if (viewModel.onClicked()) OnItemClickedStartActivity();
+        });
+        viewModel.OnButtonClickEvent().observe(this, aBoolean -> {
+            if (viewModel.onClicked()) OnButtonClickedStartActivity();
+        });
         initRecyclerView();
         addButtonClickListener();
     }
@@ -57,15 +55,15 @@ public class TodoListActivity extends AppCompatActivity {
         findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.onButtonClicked());
     }
 
-    public void startActivity() {
+    public void OnButtonClickedStartActivity() {
+        viewModel.resetOnClickedState();
+        updateNote.launch(new Intent(this, TodoTextNoteActivity.class));
+    }
+
+    public void OnItemClickedStartActivity() {
+        viewModel.resetOnClickedState();
         Intent startTodoTextNoteActivity = new Intent(this, TodoTextNoteActivity.class);
-        if (viewModel.getCurrentOnButtonClickState() == Boolean.TRUE) {
-            viewModel.updateOnButtonClickState();
-        }
-        if (viewModel.getCurrentOnTodoItemClickState() == Boolean.TRUE) {
-            startTodoTextNoteActivity.putExtra(EXTRA_TODO, todo);
-            viewModel.updateOnItemTodoClickState();
-        }
+        startTodoTextNoteActivity.putExtra(EXTRA_TODO, viewModel.getTodo());
         updateNote.launch(startTodoTextNoteActivity);
     }
 }

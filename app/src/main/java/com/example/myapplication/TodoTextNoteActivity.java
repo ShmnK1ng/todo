@@ -9,46 +9,41 @@ import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-
-import java.util.UUID;
+import androidx.lifecycle.ViewModelProvider;
 
 
 public class TodoTextNoteActivity extends AppCompatActivity {
 
-    private Todo todo;
     private EditText editText;
+    private TodoTextNoteViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
+        this.viewModel = new ViewModelProvider(this).get(TodoTextNoteViewModel.class);
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
-        this.todo = getIntent().getParcelableExtra(EXTRA_TODO);
-        if (todo != null) {
-            editText.setText(todo.getTodoText());
-        }
+        viewModel.getInputTodo().observe(this, todo -> setTextToEditText());
+        viewModel.getExtraTodo().observe(this, todo -> sendTextItem());
+        viewModel.setInputTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         addOnButtonClickListener();
         addNavigationClickListener();
     }
 
     private void sendTextItem() {
         Intent data = new Intent(this, TodoListActivity.class);
-        data.putExtra(EXTRA_TODO, todo);
+        data.putExtra(EXTRA_TODO, viewModel.getTodoTextNote());
         setResult(RESULT_OK, data);
         finish();
     }
 
     private void addOnButtonClickListener() {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setOnMenuItemClickListener(item -> {
-            String textEntered = editText.getText().toString();
-            if (textEntered.length() == 0) {
-                todoNoteAlertdialog();
+            viewModel.onButtonClicked(editText.getText().toString());
+            if (viewModel.enteredTextNote()) {
+                viewModel.updateTodo();
             } else {
-                if (todo == null) {
-                    String uid = UUID.randomUUID().toString();
-                    todo = new Todo(uid, textEntered);
-                } else todo.setTodoText(textEntered);
-                sendTextItem();
+                todoNoteAlertdialog();
             }
             return true;
         });
@@ -66,5 +61,9 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 (dialogInterface, i) -> dialogInterface.dismiss()
         );
         alertDialog.show();
+    }
+
+    private void setTextToEditText() {
+        editText.setText(viewModel.getTodoTextNote().getTodoText());
     }
 }

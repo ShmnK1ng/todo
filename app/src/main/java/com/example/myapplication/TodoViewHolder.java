@@ -20,5 +20,4 @@ public class TodoViewHolder extends RecyclerView.ViewHolder {
         textViewItem.setText(todo.getTodoText());
 
     }
-
 }
