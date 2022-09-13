@@ -6,42 +6,37 @@ import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
 
-
 public class TodoListViewModel extends ViewModel {
 
-    private final MutableLiveData<Boolean> goToTodoTextNoteOnButtonClicked = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> goToTodoTextNoteOnItemClicked = new MutableLiveData<>();
-    public LiveData<ArrayList<Todo>> _todoList = new MutableLiveData<>();
-    private final MutableLiveData<ArrayList<Todo>> todoList = (MutableLiveData<ArrayList<Todo>>) _todoList;
+    private final MutableLiveData<Boolean> goToAddTodo = new MutableLiveData<>();
+    private final MutableLiveData<Todo> todoItem = new MutableLiveData<>();
+    private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final ArrayList<Todo> todoListRepository = new ArrayList<>();
-    private Todo todo;
-    private Boolean onButtonClick = false;
+    private final MutableLiveData<Boolean> goToEditTodo = new MutableLiveData<>();
 
-    public MutableLiveData<ArrayList<Todo>> getTodoList() {
+    public LiveData<ArrayList<Todo>> getTodoList() {
         return todoList;
     }
 
-    public MutableLiveData<Boolean> OnButtonClickEvent() {
-        return goToTodoTextNoteOnButtonClicked;
+    public LiveData<Boolean> addTodoEvent() {
+        return goToAddTodo;
     }
 
-    public MutableLiveData<Boolean> OnItemClickEvent() {
-        return goToTodoTextNoteOnItemClicked;
+    public LiveData<Todo> getTodoItem() {
+        return todoItem;
     }
 
-    public void onButtonClicked() {
-        this.onButtonClick = true;
-        goToTodoTextNoteOnButtonClicked.setValue(Boolean.TRUE);
+    public LiveData<Boolean> itemClickEvent() {
+        return goToEditTodo;
     }
 
-    public void onTodoItemClicked(Todo todo) {
-        onButtonClick = true;
-        this.todo = todo;
-        goToTodoTextNoteOnItemClicked.setValue(Boolean.TRUE);
+    public void addTodoClicked() {
+        goToAddTodo.setValue(true);
     }
 
-    public ArrayList<Todo> getTodoListRepository() {
-        return todoListRepository;
+    public void todoItemClicked(Todo todo) {
+        todoItem.setValue(todo);
+        goToEditTodo.setValue(true);
     }
 
     public void updateTodo(Todo todo) {
@@ -54,15 +49,8 @@ public class TodoListViewModel extends ViewModel {
         todoList.setValue(todoListRepository);
     }
 
-    public Todo getTodo() {
-        return todo;
-    }
-
-    public Boolean onClicked() {
-        return onButtonClick;
-    }
-
-    public void resetOnClickedState() {
-        onButtonClick = false;
+    public void resetClickState() {
+        goToAddTodo.setValue(false);
+        goToEditTodo.setValue(false);
     }
 }

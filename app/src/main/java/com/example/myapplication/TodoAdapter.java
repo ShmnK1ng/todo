@@ -15,12 +15,10 @@ import java.util.ArrayList;
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
     private final OnTodoItemClickListener onClickListener;
-    private ArrayList<Todo> todoList;
+    private ArrayList<Todo> todoList = new ArrayList<>();
 
-    public TodoAdapter(OnTodoItemClickListener onClickListener, ArrayList<Todo> todoList) {
-
+    public TodoAdapter(OnTodoItemClickListener onClickListener) {
         this.onClickListener = onClickListener;
-        this.todoList = todoList;
     }
 
     @NonNull
@@ -30,7 +28,6 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
         int todoListLayout = R.layout.item_todo;
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(todoListLayout, parent, false);
-
         return new TodoViewHolder(view);
     }
 
