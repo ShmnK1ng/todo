@@ -1,5 +1,4 @@
 package com.example.myapplication;
-
 import static com.example.myapplication.TodoListActivity.EXTRA_TODO;
 
 import android.app.AlertDialog;
@@ -11,7 +10,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-
 public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
@@ -22,34 +20,34 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
         this.viewModel = new ViewModelProvider(this).get(TodoTextNoteViewModel.class);
+        viewModel.getExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
-        viewModel.getInputTodo().observe(this, todo -> setTextToEditText());
-        viewModel.getExtraTodo().observe(this, todo -> sendTextItem());
-        viewModel.setInputTodo(getIntent().getParcelableExtra(EXTRA_TODO));
-        addOnButtonClickListener();
-        addNavigationClickListener();
+        viewModel.getTodoText().observe(this, todoText -> editText.setText(todoText));
+        viewModel.getSavedTodo().observe(this, todo -> {
+            if (todo == null) {
+                todoNoteAlertdialog();
+            } else
+                sendTodoItem(todo);
+        });
+        onButtonClickListener();
+        navigationClickListener();
     }
 
-    private void sendTextItem() {
+    private void sendTodoItem(Todo todo) {
         Intent data = new Intent(this, TodoListActivity.class);
-        data.putExtra(EXTRA_TODO, viewModel.getTodoTextNote());
+        data.putExtra(EXTRA_TODO, todo);
         setResult(RESULT_OK, data);
         finish();
     }
 
-    private void addOnButtonClickListener() {
+    private void onButtonClickListener() {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setOnMenuItemClickListener(item -> {
             viewModel.onButtonClicked(editText.getText().toString());
-            if (viewModel.enteredTextNote()) {
-                viewModel.updateTodo();
-            } else {
-                todoNoteAlertdialog();
-            }
             return true;
         });
     }
 
-    private void addNavigationClickListener() {
+    private void navigationClickListener() {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> finish());
     }
 
@@ -61,9 +59,5 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 (dialogInterface, i) -> dialogInterface.dismiss()
         );
         alertDialog.show();
-    }
-
-    private void setTextToEditText() {
-        editText.setText(viewModel.getTodoTextNote().getTodoText());
     }
 }

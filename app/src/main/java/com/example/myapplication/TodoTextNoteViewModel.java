@@ -8,49 +8,37 @@ import java.util.UUID;
 
 public class TodoTextNoteViewModel extends ViewModel {
 
-    public final LiveData<Todo> _putExtraTodo = new MutableLiveData<>();
-    private final MutableLiveData<Todo> putExtraTodo = (MutableLiveData<Todo>) _putExtraTodo;
-    public LiveData<Todo> _inputTodo = new MutableLiveData<>();
-    private final MutableLiveData<Todo> inputTodo = (MutableLiveData<Todo>) _inputTodo;
+    private final MutableLiveData<Todo> savedTodo = new MutableLiveData<>();
+    private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
     private Todo todo;
-    private String textTodo;
-    private Boolean enteredTextNoteStatus;
 
-    public MutableLiveData<Todo> getExtraTodo() {
-        return putExtraTodo;
+    public LiveData<Todo> getSavedTodo() {
+        return savedTodo;
     }
 
-    public MutableLiveData<Todo> getInputTodo() {
-        return inputTodo;
+    public LiveData<String> getTodoText() {
+        return editTodoText;
     }
 
-    public void setInputTodo(Todo todo) {
+    public void getExtraTodo(Todo todo) {
+        this.todo = todo;
         if (todo != null) {
-            this.todo = todo;
-            inputTodo.setValue(todo);
+            String textTodo = todo.getTodoText();
+            editTodoText.setValue(textTodo);
         }
     }
 
-    public void updateTodo() {
+    public void onButtonClicked(String textTodo) {
         if (todo == null) {
             String uid = UUID.randomUUID().toString();
             todo = new Todo(uid, textTodo);
         } else {
             todo.setTodoText(textTodo);
         }
-        putExtraTodo.setValue(todo);
-    }
-
-    public Todo getTodoTextNote() {
-        return todo;
-    }
-
-    public void onButtonClicked(String textTodo) {
-        this.textTodo = textTodo;
-        enteredTextNoteStatus = textTodo.length() != 0;
-    }
-
-    public Boolean enteredTextNote() {
-        return enteredTextNoteStatus;
+        if (textTodo.length() == 0) {
+            savedTodo.setValue(null);
+        } else {
+            savedTodo.setValue(todo);
+        }
     }
 }
