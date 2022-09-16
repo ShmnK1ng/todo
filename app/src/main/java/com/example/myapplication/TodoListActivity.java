@@ -13,8 +13,10 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
+    static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
+
     private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 Intent intent = result.getData();
@@ -23,7 +25,6 @@ public class TodoListActivity extends AppCompatActivity {
                 }
             });
     private final TodoAdapter.OnTodoItemClickListener todoClickListener = todo -> viewModel.todoItemClicked(todo);
-    private Intent startEditTodo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,20 +32,22 @@ public class TodoListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();
         this.viewModel = new ViewModelProvider(this).get(TodoListViewModel.class);
-        viewModel.itemClickEvent().observe(this, isItemClicked -> {
-            if (isItemClicked) startEditTodo();
+        viewModel.itemClickEvent().observe(this, todo -> {
+            if (todo != null) {
+                startEditTodo(todo);
+            }
         });
         viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
-        viewModel.getTodoItem().observe(this, this::putExtraTodo);
         viewModel.addTodoEvent().observe(this, isItemClicked -> {
-            if (isItemClicked) startAddTodo();
+            if (isItemClicked) {
+                startAddTodo();
+            }
         });
         findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
     }
 
     private void initRecyclerView() {
-        int spanCount = 2;
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(spanCount, StaggeredGridLayoutManager.VERTICAL);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
         RecyclerView todoList_RecyclerView = findViewById(R.id.activity_todo_list_recyclerview);
         todoList_RecyclerView.setLayoutManager(layoutManager);
         this.todoAdapter = new TodoAdapter(todoClickListener);
@@ -56,13 +59,10 @@ public class TodoListActivity extends AppCompatActivity {
         updateNote.launch(new Intent(this, TodoTextNoteActivity.class));
     }
 
-    public void startEditTodo() {
+    public void startEditTodo(Todo todo) {
         viewModel.resetClickState();
-        updateNote.launch(startEditTodo);
-    }
-
-    public void putExtraTodo(Todo todo) {
-        startEditTodo = new Intent(this, TodoTextNoteActivity.class);
+        Intent startEditTodo = new Intent(this, TodoTextNoteActivity.class);
         startEditTodo.putExtra(EXTRA_TODO, todo);
+        updateNote.launch(startEditTodo);
     }
 }

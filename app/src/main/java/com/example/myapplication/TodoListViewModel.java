@@ -9,10 +9,8 @@ import java.util.ArrayList;
 public class TodoListViewModel extends ViewModel {
 
     private final MutableLiveData<Boolean> goToAddTodo = new MutableLiveData<>();
-    private final MutableLiveData<Todo> todoItem = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
-    private final ArrayList<Todo> todoListRepository = new ArrayList<>();
-    private final MutableLiveData<Boolean> goToEditTodo = new MutableLiveData<>();
+    private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
 
     public LiveData<ArrayList<Todo>> getTodoList() {
         return todoList;
@@ -22,11 +20,7 @@ public class TodoListViewModel extends ViewModel {
         return goToAddTodo;
     }
 
-    public LiveData<Todo> getTodoItem() {
-        return todoItem;
-    }
-
-    public LiveData<Boolean> itemClickEvent() {
+    public LiveData<Todo> itemClickEvent() {
         return goToEditTodo;
     }
 
@@ -35,11 +29,14 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void todoItemClicked(Todo todo) {
-        todoItem.setValue(todo);
-        goToEditTodo.setValue(true);
+        goToEditTodo.setValue(todo);
     }
 
     public void updateTodo(Todo todo) {
+        ArrayList<Todo> todoListRepository = todoList.getValue();
+        if (todoListRepository == null) {
+            todoListRepository = new ArrayList<>();
+        }
         if (!todoListRepository.contains(todo)) {
             todoListRepository.add(todo);
         } else {
@@ -51,6 +48,6 @@ public class TodoListViewModel extends ViewModel {
 
     public void resetClickState() {
         goToAddTodo.setValue(false);
-        goToEditTodo.setValue(false);
+        goToEditTodo.setValue(null);
     }
 }
