@@ -4,6 +4,8 @@ import static com.example.myapplication.TodoListActivity.EXTRA_TODO;
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -22,13 +24,14 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         this.viewModel = new ViewModelProvider(this).get(TodoTextNoteViewModel.class);
         viewModel.getExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
-        viewModel.getTodoText().observe(this, todoText -> editText.setText(todoText));
+        viewModel.getTodoText().observe(this, this::setTodoText);
         viewModel.getSavedTodo().observe(this, todo -> {
             if (todo == null) {
                 todoNoteAlertdialog();
             } else
                 sendTodoItem(todo);
         });
+        editTextChangedListener();
         onButtonClickListener();
         navigationClickListener();
     }
@@ -38,6 +41,25 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         data.putExtra(EXTRA_TODO, todo);
         setResult(RESULT_OK, data);
         finish();
+    }
+
+    private void editTextChangedListener() {
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                viewModel.updateTodoText(editable.toString());
+            }
+        });
     }
 
     private void onButtonClickListener() {
@@ -59,5 +81,10 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 (dialogInterface, i) -> dialogInterface.dismiss()
         );
         alertDialog.show();
+    }
+
+    private void setTodoText(String todoText) {
+        editText.setText(todoText);
+        editText.setSelection(todoText.length());
     }
 }
