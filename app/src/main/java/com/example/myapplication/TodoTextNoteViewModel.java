@@ -10,6 +10,7 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     private final MutableLiveData<Todo> savedTodo = new MutableLiveData<>();
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
     private Todo todo;
 
     public LiveData<Todo> getSavedTodo() {
@@ -18,6 +19,10 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     public LiveData<String> getTodoText() {
         return editTodoText;
+    }
+
+    public LiveData<Boolean> invalidInputEvent() {
+        return invalidInputError;
     }
 
     public void setExtraTodo(Todo todo) {
@@ -40,9 +45,13 @@ public class TodoTextNoteViewModel extends ViewModel {
             todo.setTodoText(textTodo);
         }
         if (textTodo.length() == 0) {
-            savedTodo.setValue(null);
+            invalidInputError.setValue(true);
         } else {
             savedTodo.setValue(todo);
         }
+    }
+
+    public void resetInvalidInputEvent() {
+        invalidInputError.setValue(false);
     }
 }

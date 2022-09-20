@@ -1,4 +1,5 @@
 package com.example.myapplication;
+
 import static com.example.myapplication.TodoListActivity.EXTRA_TODO;
 
 import android.app.AlertDialog;
@@ -25,11 +26,11 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         viewModel.getTodoText().observe(this, this::setTodoText);
-        viewModel.getSavedTodo().observe(this, todo -> {
-            if (todo == null) {
-                todoNoteAlertdialog();
-            } else
-                sendTodoItem(todo);
+        viewModel.getSavedTodo().observe(this, this::sendTodoItem);
+        viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
+            if (isInvalidTextInput) {
+                InvalidInputError();
+            }
         });
         editTextChangedListener();
         onButtonClickListener();
@@ -73,7 +74,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> finish());
     }
 
-    private void todoNoteAlertdialog() {
+    private void InvalidInputError() {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(R.string.activity_todo_text_note_dialog_title);
         alertDialog.setMessage(getString(R.string.activity_todo_text_note_dialog_message));
@@ -81,6 +82,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 (dialogInterface, i) -> dialogInterface.dismiss()
         );
         alertDialog.show();
+        viewModel.resetInvalidInputEvent();
     }
 
     private void setTodoText(String todoText) {
