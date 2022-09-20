@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
-    static final int SPAN_COUNT = 2;
+    private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
 
@@ -48,18 +48,18 @@ public class TodoListActivity extends AppCompatActivity {
 
     private void initRecyclerView() {
         StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
-        RecyclerView todoList_RecyclerView = findViewById(R.id.activity_todo_list_recyclerview);
-        todoList_RecyclerView.setLayoutManager(layoutManager);
+        RecyclerView todoListRecyclerView = findViewById(R.id.activity_todo_list_recyclerview);
+        todoListRecyclerView.setLayoutManager(layoutManager);
         this.todoAdapter = new TodoAdapter(todoClickListener);
-        todoList_RecyclerView.setAdapter(todoAdapter);
+        todoListRecyclerView.setAdapter(todoAdapter);
     }
 
-    public void startAddTodo() {
+    private void startAddTodo() {
         viewModel.resetClickState();
         updateNote.launch(new Intent(this, TodoTextNoteActivity.class));
     }
 
-    public void startEditTodo(Todo todo) {
+    private void startEditTodo(Todo todo) {
         viewModel.resetClickState();
         Intent startEditTodo = new Intent(this, TodoTextNoteActivity.class);
         startEditTodo.putExtra(EXTRA_TODO, todo);

@@ -22,7 +22,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
         this.viewModel = new ViewModelProvider(this).get(TodoTextNoteViewModel.class);
-        viewModel.getExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
+        viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         viewModel.getTodoText().observe(this, this::setTodoText);
         viewModel.getSavedTodo().observe(this, todo -> {

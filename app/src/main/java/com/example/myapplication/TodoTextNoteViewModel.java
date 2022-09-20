@@ -20,7 +20,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         return editTodoText;
     }
 
-    public void getExtraTodo(Todo todo) {
+    public void setExtraTodo(Todo todo) {
         this.todo = todo;
         if (todo != null) {
             String textTodo = todo.getTodoText();
