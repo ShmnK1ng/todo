@@ -29,9 +29,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     }
 
     public void updateTodoText(String editedText) {
-        if (!editedText.equals(editTodoText.getValue())) {
-            editTodoText.setValue(editedText);
-        }
+        editTodoText.setValue(editedText);
     }
 
     public void onButtonClicked(String textTodo) {
