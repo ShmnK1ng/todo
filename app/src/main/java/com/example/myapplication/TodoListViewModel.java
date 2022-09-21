@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class TodoListViewModel extends ViewModel {
 
@@ -12,7 +13,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
 
-    public LiveData<ArrayList<Todo>> getTodoList() {
+    public LiveData<? extends List<Todo>> getTodoList() {
         return todoList;
     }
 
