@@ -10,12 +10,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
 
     private final OnTodoItemClickListener onClickListener;
-    private ArrayList<Todo> todoList = new ArrayList<>();
+    private List<Todo> todoList = new ArrayList<>();
 
     public TodoAdapter(OnTodoItemClickListener onClickListener) {
         this.onClickListener = onClickListener;
@@ -48,7 +49,7 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoViewHolder> {
     }
 
     @SuppressLint("NotifyDataSetChanged")
-    public void refreshTodoList(ArrayList<Todo> todoList) {
+    public void refreshTodoList(List<Todo> todoList) {
         this.todoList = todoList;
         notifyDataSetChanged();
     }

@@ -79,10 +79,12 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         alertDialog.setTitle(R.string.activity_todo_text_note_dialog_title);
         alertDialog.setMessage(getString(R.string.activity_todo_text_note_dialog_message));
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
-                (dialogInterface, i) -> dialogInterface.dismiss()
+                (dialogInterface, i) -> {
+                    dialogInterface.dismiss();
+                    viewModel.resetInvalidInputEvent();
+                }
         );
         alertDialog.show();
-        viewModel.resetInvalidInputEvent();
     }
 
     private void setTodoText(String todoText) {
