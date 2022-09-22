@@ -1,68 +1,68 @@
 package com.example.myapplication;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
-
-import java.util.ArrayList;
-
 
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
-    private final ArrayList<Todo> todoList = new ArrayList<>();
+    private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
+    private TodoListViewModel viewModel;
 
-
-    ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+    private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
-
-                if (result.getResultCode() == Activity.RESULT_OK && result.getData() != null) {
-                    Todo todoEnteredText = result.getData().getParcelableExtra(EXTRA_TODO);
-                    if (todoList.contains(todoEnteredText)) {
-                        int itemPosition = todoList.indexOf(todoEnteredText);
-                        todoList.set(itemPosition, todoEnteredText);
-                        todoAdapter.notifyItemChanged(itemPosition);
-                    } else {
-                        todoList.add(todoEnteredText);
-                        todoAdapter.notifyItemChanged(todoList.size());
-                    }
+                Intent intent = result.getData();
+                if (intent != null) {
+                    viewModel.updateTodo(intent.getParcelableExtra(EXTRA_TODO));
                 }
             });
-    TodoAdapter.OnTodoItemClickListener todoClickListener = todo -> {
-        Intent todoTextNoteIntent = new Intent(this, TodoTextNoteActivity.class);
-        todoTextNoteIntent.putExtra(EXTRA_TODO, todo);
-        updateNote.launch(todoTextNoteIntent);
-    };
+    private final TodoAdapter.OnTodoItemClickListener todoClickListener = todo -> viewModel.todoItemClicked(todo);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();
-        addButtonClickListener();
-
+        this.viewModel = new ViewModelProvider(this).get(TodoListViewModel.class);
+        viewModel.itemClickEvent().observe(this, todo -> {
+            if (todo != null) {
+                startEditTodo(todo);
+            }
+        });
+        viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
+        viewModel.addTodoEvent().observe(this, isItemClicked -> {
+            if (isItemClicked) {
+                startAddTodo();
+            }
+        });
+        findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
     }
 
     private void initRecyclerView() {
-        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL);
-        RecyclerView todoList_RecyclerView = findViewById(R.id.activity_todo_list_recyclerview);
-        todoList_RecyclerView.setLayoutManager(layoutManager);
-        this.todoAdapter = new TodoAdapter(todoClickListener, todoList);
-        todoList_RecyclerView.setAdapter(todoAdapter);
+        StaggeredGridLayoutManager layoutManager = new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
+        RecyclerView todoListRecyclerView = findViewById(R.id.activity_todo_list_recyclerview);
+        todoListRecyclerView.setLayoutManager(layoutManager);
+        this.todoAdapter = new TodoAdapter(todoClickListener);
+        todoListRecyclerView.setAdapter(todoAdapter);
     }
 
-    public void addButtonClickListener() {
-        findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> {
-            Intent startTodoTextNoteActivity = new Intent(this, TodoTextNoteActivity.class);
-            updateNote.launch(startTodoTextNoteActivity);
-        });
+    private void startAddTodo() {
+        viewModel.resetClickState();
+        updateNote.launch(new Intent(this, TodoTextNoteActivity.class));
     }
 
+    private void startEditTodo(Todo todo) {
+        viewModel.resetClickState();
+        Intent startEditTodo = new Intent(this, TodoTextNoteActivity.class);
+        startEditTodo.putExtra(EXTRA_TODO, todo);
+        updateNote.launch(startEditTodo);
+    }
 }
