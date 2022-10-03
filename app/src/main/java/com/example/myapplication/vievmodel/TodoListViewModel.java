@@ -1,8 +1,10 @@
-package com.example.myapplication;
+package com.example.myapplication.vievmodel;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
+
+import com.example.myapplication.todo.Todo;
 
 import java.util.ArrayList;
 import java.util.List;

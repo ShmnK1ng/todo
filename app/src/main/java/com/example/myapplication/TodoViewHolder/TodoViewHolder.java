@@ -1,10 +1,13 @@
-package com.example.myapplication;
+package com.example.myapplication.TodoViewHolder;
 
 import android.view.View;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.myapplication.R;
+import com.example.myapplication.todo.Todo;
 
 public class TodoViewHolder extends RecyclerView.ViewHolder {
 

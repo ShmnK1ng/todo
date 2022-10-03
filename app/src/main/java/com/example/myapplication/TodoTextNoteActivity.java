@@ -13,6 +13,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.myapplication.todo.Todo;
+import com.example.myapplication.vievmodel.TodoTextNoteViewModel;
+
 public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
