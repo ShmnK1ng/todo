@@ -4,7 +4,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
-import com.example.myapplication.todo.Todo;
+import com.example.myapplication.model.Todo;
 
 import java.util.ArrayList;
 import java.util.List;
