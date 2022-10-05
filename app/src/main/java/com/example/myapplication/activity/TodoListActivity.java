@@ -13,7 +13,7 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.vievmodel.TodoListViewModel;
+import com.example.myapplication.viewmodel.TodoListViewModel;
 
 public class TodoListActivity extends AppCompatActivity {
 

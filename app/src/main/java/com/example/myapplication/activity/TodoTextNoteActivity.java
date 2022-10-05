@@ -15,7 +15,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.vievmodel.TodoTextNoteViewModel;
+import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 
 public class TodoTextNoteActivity extends AppCompatActivity {
 
