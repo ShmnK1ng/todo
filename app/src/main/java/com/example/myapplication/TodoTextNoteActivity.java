@@ -13,20 +13,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.network.SendTodoRunnable;
-import com.example.myapplication.network.TodoJsonWriter;
 import com.example.myapplication.todo.Todo;
 import com.example.myapplication.vievmodel.TodoTextNoteViewModel;
-
-import java.io.IOException;
-import java.io.StringWriter;
 
 public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
     private TodoTextNoteViewModel viewModel;
-    private final StringWriter stringWriter = new StringWriter();
-    private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,13 +44,6 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         Intent data = new Intent(this, TodoListActivity.class);
         data.putExtra(EXTRA_TODO, todo);
         setResult(RESULT_OK, data);
-        try {
-            todoJsonWriter.writeJson(stringWriter, todo);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        Thread sendTodoTread = new Thread(new SendTodoRunnable(stringWriter));
-        sendTodoTread.start();
         finish();
     }
 
