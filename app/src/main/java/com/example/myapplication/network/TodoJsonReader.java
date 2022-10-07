@@ -13,6 +13,8 @@ import java.util.List;
 
 public final class TodoJsonReader {
 
+    private static final String NAME_TODO_TEXT = "todoText";
+
     public List<Todo> readJsonStream(InputStream in) throws IOException {
         try (JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
             return readTodoList(reader);
@@ -21,16 +23,15 @@ public final class TodoJsonReader {
 
     private List<Todo> readTodoList(JsonReader reader) throws IOException {
         String uid = null;
-        String todoText = null;
         List<Todo> todoList = new ArrayList<>();
 
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (!name.equals("todoText")) {
+            if (!name.equals(NAME_TODO_TEXT)) {
                 uid = name;
-                todoText = readTextTodo(reader);
             }
+            String todoText = readTextTodo(reader);
             Todo todo = new Todo(uid, todoText);
             todoList.add(todo);
         }
@@ -44,7 +45,7 @@ public final class TodoJsonReader {
         reader.beginObject();
         while (reader.hasNext()) {
             String name = reader.nextName();
-            if (name.equals("todoText")) {
+            if (name.equals(NAME_TODO_TEXT)) {
                 textTodo = reader.nextString();
             } else {
                 reader.skipValue();
