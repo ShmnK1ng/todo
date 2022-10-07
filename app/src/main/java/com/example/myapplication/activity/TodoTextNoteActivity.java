@@ -1,6 +1,6 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
-import static com.example.myapplication.TodoListActivity.EXTRA_TODO;
+import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -12,6 +12,10 @@ import android.widget.EditText;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
+
+import com.example.myapplication.R;
+import com.example.myapplication.model.Todo;
+import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 
 public class TodoTextNoteActivity extends AppCompatActivity {
 

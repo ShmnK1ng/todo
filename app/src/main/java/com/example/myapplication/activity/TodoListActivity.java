@@ -1,4 +1,4 @@
-package com.example.myapplication;
+package com.example.myapplication.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -9,6 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+
+import com.example.myapplication.R;
+import com.example.myapplication.adapter.TodoAdapter;
+import com.example.myapplication.model.Todo;
+import com.example.myapplication.viewmodel.TodoListViewModel;
 
 public class TodoListActivity extends AppCompatActivity {
 
