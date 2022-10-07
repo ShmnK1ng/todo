@@ -1,4 +1,4 @@
-package com.example.myapplication.TodoAdapter;
+package com.example.myapplication.adapter;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -10,8 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.TodoViewHolder.TodoViewHolder;
-import com.example.myapplication.todo.Todo;
+import com.example.myapplication.model.Todo;
+import com.example.myapplication.viewholder.TodoViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
