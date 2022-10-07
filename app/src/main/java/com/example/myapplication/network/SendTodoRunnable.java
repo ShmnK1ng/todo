@@ -7,8 +7,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 
 public class SendTodoRunnable implements Runnable {
@@ -17,7 +15,6 @@ public class SendTodoRunnable implements Runnable {
     private static final String REQUEST_POST = "POST";
     private final Todo todo;
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
-    private OutputStream outputStream = null;
 
     public SendTodoRunnable(Todo todo) {
         this.todo = todo;
@@ -25,67 +22,23 @@ public class SendTodoRunnable implements Runnable {
 
     @Override
     public void run() {
-        URL url = null;
         try {
-            url = new URL(FIREBASE_URL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        HttpURLConnection httpURLConnection = null;
-        try {
-            if (url != null) {
-                httpURLConnection = (HttpURLConnection) url.openConnection();
+            URL url = new URL(FIREBASE_URL);
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod(REQUEST_POST);
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+            httpURLConnection.connect();
+            OutputStream outputStream = httpURLConnection.getOutputStream();
+            todoJsonWriter.writeJson(outputStream, todo);
+            if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
+                InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
+                BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
+                String serverMassage = bufferedReader.readLine(); // пока просто сохраняю сообщение от сервера
+                inputStreamReader.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
-        if (httpURLConnection != null) {
-            try {
-                httpURLConnection.setRequestMethod(REQUEST_POST);
-            } catch (ProtocolException e) {
-                e.printStackTrace();
-            }
-
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
-
-            try {
-                httpURLConnection.connect();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                outputStream = httpURLConnection.getOutputStream();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            try {
-                todoJsonWriter.writeJson(outputStream, todo);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            try {
-                if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
-                    InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
-                    BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
-                    String serverMassage = bufferedReader.readLine(); // пока просто сохраняю сообщение от сервера
-                    inputStreamReader.close();
-                    bufferedReader.close();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-        if (outputStream != null) {
-            try {
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
         }
     }
 }
