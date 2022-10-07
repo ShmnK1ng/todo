@@ -35,7 +35,7 @@ public class SendTodoRunnable implements Runnable {
                 InputStreamReader inputStreamReader = new InputStreamReader(httpURLConnection.getInputStream());
                 BufferedReader bufferedReader = new BufferedReader(inputStreamReader);
                 String serverMassage = bufferedReader.readLine(); // пока просто сохраняю сообщение от сервера
-                inputStreamReader.close();
+                bufferedReader.close();
             }
         } catch (IOException e) {
             e.printStackTrace();
