@@ -31,10 +31,6 @@ public class Todo implements Parcelable {
         this.uid = uid;
     }
 
-    public String getUid() {
-        return this.uid;
-    }
-
     public String getTodoText() {
         return this.todoText;
     }

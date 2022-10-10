@@ -1,6 +1,6 @@
 package com.example.myapplication.network;
 
-import com.example.myapplication.todo.Todo;
+import com.example.myapplication.model.Todo;
 
 import java.io.BufferedReader;
 import java.io.IOException;

@@ -2,7 +2,7 @@ package com.example.myapplication.network;
 
 import android.util.JsonWriter;
 
-import com.example.myapplication.todo.Todo;
+import com.example.myapplication.model.Todo;
 
 import java.io.IOException;
 import java.io.OutputStream;
