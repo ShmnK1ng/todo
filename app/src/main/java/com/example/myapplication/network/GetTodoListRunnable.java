@@ -1,6 +1,6 @@
 package com.example.myapplication.network;
 
-import com.example.myapplication.Todo;
+import com.example.myapplication.model.Todo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +26,7 @@ public class GetTodoListRunnable implements Runnable {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 List<Todo> todoList = todoJsonReader.readJsonStream(inputStream); // пока сохраняет список тудушек сюда
                 inputStream.close();
+                httpURLConnection.disconnect();
             }
         } catch (IOException e) {
             e.printStackTrace();

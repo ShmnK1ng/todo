@@ -1,8 +1,9 @@
 package com.example.myapplication.network;
 
 import android.util.JsonReader;
+import android.util.JsonToken;
 
-import com.example.myapplication.Todo;
+import com.example.myapplication.model.Todo;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -14,6 +15,7 @@ import java.util.List;
 public final class TodoJsonReader {
 
     private static final String NAME_TODO_TEXT = "todoText";
+    private static final String NAME_INIT_MESSAGE = "message";
 
     public List<Todo> readJsonStream(InputStream in) throws IOException {
         try (JsonReader reader = new JsonReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
@@ -22,36 +24,48 @@ public final class TodoJsonReader {
     }
 
     private List<Todo> readTodoList(JsonReader reader) throws IOException {
-        String uid = null;
         List<Todo> todoList = new ArrayList<>();
 
-        reader.beginObject();
         while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (!name.equals(NAME_TODO_TEXT)) {
-                uid = name;
+            if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                reader.beginObject();
             }
-            String todoText = readTextTodo(reader);
-            Todo todo = new Todo(uid, todoText);
-            todoList.add(todo);
+            if (reader.peek() == JsonToken.END_OBJECT) {
+                reader.endObject();
+            }
+            if (reader.peek() == JsonToken.NAME) {
+                String name = reader.nextName();
+                if (!name.equals(NAME_TODO_TEXT) && !name.equals(NAME_INIT_MESSAGE)) {
+                    String todoText = readTextTodo(reader);
+                    Todo todo = new Todo(name, todoText);
+                    todoList.add(todo);
+                } else {
+                    reader.skipValue();
+                }
+            }
         }
-        reader.endObject();
         return todoList;
     }
 
     private String readTextTodo(JsonReader reader) throws IOException {
         String textTodo = null;
 
-        reader.beginObject();
+        if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+            reader.beginObject();
+        }
         while (reader.hasNext()) {
-            String name = reader.nextName();
-            if (name.equals(NAME_TODO_TEXT)) {
-                textTodo = reader.nextString();
-            } else {
-                reader.skipValue();
+            if (reader.peek() == JsonToken.NAME) {
+                String name = reader.nextName();
+                if (name.equals(NAME_TODO_TEXT)) {
+                    textTodo = reader.nextString();
+                } else {
+                    reader.skipValue();
+                }
             }
         }
-        reader.endObject();
+        if (reader.peek() == JsonToken.END_OBJECT) {
+            reader.endObject();
+        }
         return textTodo;
     }
 }
