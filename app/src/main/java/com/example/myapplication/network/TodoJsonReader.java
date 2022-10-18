@@ -41,7 +41,6 @@ public final class TodoJsonReader {
                     }
                 }
             }
-            reader.close();
             return appID;
         }
     }

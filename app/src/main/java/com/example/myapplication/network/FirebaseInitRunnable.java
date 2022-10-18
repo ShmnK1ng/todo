@@ -13,12 +13,13 @@ public class FirebaseInitRunnable implements Runnable {
     public static String APP_ID;
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
+    private HttpURLConnection httpURLConnection;
 
     @Override
     public void run() {
         try {
             URL url = new URL(FIREBASE_URL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod(REQUEST_POST);
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -29,9 +30,10 @@ public class FirebaseInitRunnable implements Runnable {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 APP_ID = todoJsonReader.readJsonFromServer(inputStream);
             }
-            httpURLConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            httpURLConnection.disconnect();
         }
     }
 }
