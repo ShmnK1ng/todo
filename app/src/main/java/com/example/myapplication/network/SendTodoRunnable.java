@@ -39,6 +39,7 @@ public class SendTodoRunnable implements Runnable {
                 bufferedReader.close();
                 httpURLConnection.disconnect();
             }
+            httpURLConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
