@@ -13,12 +13,13 @@ public class GetTodoListRunnable implements Runnable {
     private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/TodoList/.json";
     private static final String REQUEST_GET = "GET";
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
+    private HttpURLConnection httpURLConnection;
 
     @Override
     public void run() {
         try {
             URL url = new URL(FIREBASE_URL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod(REQUEST_GET);
             httpURLConnection.setDoInput(true);
             httpURLConnection.connect();
@@ -26,10 +27,11 @@ public class GetTodoListRunnable implements Runnable {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 List<Todo> todoList = todoJsonReader.readJsonStream(inputStream); // пока сохраняет список тудушек сюда
                 inputStream.close();
-                httpURLConnection.disconnect();
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            httpURLConnection.disconnect();
         }
     }
 }

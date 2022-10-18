@@ -15,6 +15,7 @@ public class SendTodoRunnable implements Runnable {
     private static final String REQUEST_POST = "POST";
     private final Todo todo;
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
+    private HttpURLConnection httpURLConnection;
 
     public SendTodoRunnable(Todo todo) {
         this.todo = todo;
@@ -24,7 +25,7 @@ public class SendTodoRunnable implements Runnable {
     public void run() {
         try {
             URL url = new URL(FIREBASE_URL);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod(REQUEST_POST);
             httpURLConnection.setDoOutput(true);
             httpURLConnection.setDoInput(true);
@@ -40,6 +41,8 @@ public class SendTodoRunnable implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            httpURLConnection.disconnect();
         }
     }
 }
