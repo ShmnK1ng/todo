@@ -1,10 +1,12 @@
 package com.example.myapplication.viewmodel;
 
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.sharedpreferences.TodoSharedPreferences;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,6 +16,15 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> goToAddTodo = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
+
+    public TodoListViewModel(TodoSharedPreferences todoSharedPreferences) {
+        String appID = todoSharedPreferences.getID();
+        if (appID != null) {
+            //планирую в дальнейшем запустить тут поток и получить ID от сервера
+        } else {
+            //получаю TodoList от сервера и обновляю LiveData
+        }
+    }
 
     public LiveData<? extends List<Todo>> getTodoList() {
         return todoList;
