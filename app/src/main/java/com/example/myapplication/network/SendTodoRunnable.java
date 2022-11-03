@@ -16,11 +16,11 @@ public class SendTodoRunnable implements Runnable {
     private static final String REQUEST_POST = "POST";
     private static final String REQUEST_PUT = "PUT";
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
-    private AppIdentifier appIdentifier;
+    private final AppIdentifier appIdentifier;
     private final Todo todo;
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
     private HttpURLConnection httpURLConnection;
-    private Callback<Todo> callback;
+    private final Callback<Todo> callback;
 
     public SendTodoRunnable(Todo todo, Callback<Todo> callback, AppIdentifier appIdentifier) {
         this.todo = todo;
