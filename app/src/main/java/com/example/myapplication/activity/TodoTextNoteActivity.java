@@ -1,9 +1,12 @@
 package com.example.myapplication.activity;
 
+import static com.example.myapplication.activity.TodoListActivity.APP_PREFERENCES;
 import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,7 +18,9 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
+import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
 
 public class TodoTextNoteActivity extends AppCompatActivity {
 
@@ -26,7 +31,9 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
-        this.viewModel = new ViewModelProvider(this).get(TodoTextNoteViewModel.class);
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
+        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper)).get(TodoTextNoteViewModel.class);
         viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         viewModel.getTodoText().observe(this, this::setTodoText);

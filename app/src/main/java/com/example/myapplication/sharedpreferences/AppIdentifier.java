@@ -1,5 +1,7 @@
 package com.example.myapplication.sharedpreferences;
 
-public interface TodoSharedPreferences {
+public interface AppIdentifier {
     String getID();
+
+    void setID(String id);
 }

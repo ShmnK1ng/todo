@@ -22,6 +22,7 @@ import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
+    static final String APP_PREFERENCES = "todo_settings";
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
@@ -38,7 +39,7 @@ public class TodoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences serverID = getPreferences(Context.MODE_PRIVATE);
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();

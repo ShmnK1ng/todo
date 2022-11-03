@@ -2,7 +2,7 @@ package com.example.myapplication.sharedpreferences;
 
 import android.content.SharedPreferences;
 
-public class SharedPreferencesWrapper implements TodoSharedPreferences {
+public class SharedPreferencesWrapper implements AppIdentifier {
     private static final String APP_PREFERENCES_ID = "App_id";
     private final SharedPreferences sharedPreferences;
 
@@ -15,5 +15,12 @@ public class SharedPreferencesWrapper implements TodoSharedPreferences {
         if (sharedPreferences.contains(APP_PREFERENCES_ID)) {
             return sharedPreferences.getString(APP_PREFERENCES_ID, "");
         } else return null;
+    }
+
+    @Override
+    public void setID(String id) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putString(APP_PREFERENCES_ID, id);
+        editor.apply();
     }
 }
