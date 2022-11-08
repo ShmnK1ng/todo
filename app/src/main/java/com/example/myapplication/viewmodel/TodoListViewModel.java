@@ -21,38 +21,40 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
-    private final Callback<String> appInitEvent = new Callback<String>() {
+    private final Callback<String> getIDCallback = new Callback<String>() {
         @Override
         public void onFail() {
-            Callback<String> getIDEvent = new Callback<String>() {
-                @Override
-                public void onFail() {
-                    //do nothing
-                }
+            //do nothing
+        }
 
-                @Override
-                public void onSuccess(String result) {
-                    appIdentifier.setID(result);
-                }
-            };
-            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDEvent));
+        @Override
+        public void onSuccess(String result) {
+            appIdentifier.setID(result);
+        }
+    };
+
+    private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
+        @Override
+        public void onFail() {
+            //do nothing
+        }
+
+        @Override
+        public void onSuccess(List<Todo> result) {
+            todoList.postValue((ArrayList<Todo>) result);
+        }
+    };
+
+    private final Callback<String> appInitCallback = new Callback<String>() {
+        @Override
+        public void onFail() {
+            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback));
             onServerInitThread.start();
         }
 
         @Override
         public void onSuccess(String id) {
-            Callback<List<Todo>> getTodoListEvent = new Callback<List<Todo>>() {
-                @Override
-                public void onFail() {
-                    //do nothing
-                }
-
-                @Override
-                public void onSuccess(List<Todo> result) {
-                    todoList.postValue((ArrayList<Todo>) result);
-                }
-            };
-            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListEvent));
+            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListCallback));
             getTodoListThread.start();
         }
     };
@@ -102,7 +104,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void appInit() {
-        Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitEvent));
+        Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitCallback));
         appInitThread.start();
     }
 }

@@ -17,7 +17,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
     private Todo todo;
     private final AppIdentifier appIdentifier;
-    private final Callback<Todo> sendTodoEvent = new Callback<Todo>() {
+    private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
             //do nothing
@@ -66,7 +66,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         if (textTodo.length() == 0) {
             invalidInputError.setValue(true);
         } else {
-            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoEvent, appIdentifier));
+            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
             sentTodoThread.start();
         }
     }
