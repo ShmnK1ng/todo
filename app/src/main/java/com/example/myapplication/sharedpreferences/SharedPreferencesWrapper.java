@@ -12,9 +12,7 @@ public class SharedPreferencesWrapper implements AppIdentifier {
 
     @Override
     public String getID() {
-        if (sharedPreferences.contains(APP_PREFERENCES_ID)) {
-            return sharedPreferences.getString(APP_PREFERENCES_ID, "");
-        } else return null;
+            return sharedPreferences.getString(APP_PREFERENCES_ID, null);
     }
 
     @Override
