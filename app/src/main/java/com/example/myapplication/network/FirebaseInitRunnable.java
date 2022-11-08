@@ -40,6 +40,7 @@ public class FirebaseInitRunnable implements Runnable {
             }
         } catch (IOException e) {
             e.printStackTrace();
+            callBack.onFail();
         } finally {
             httpURLConnection.disconnect();
         }
