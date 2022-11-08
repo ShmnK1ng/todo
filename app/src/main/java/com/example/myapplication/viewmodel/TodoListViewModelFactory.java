@@ -18,6 +18,8 @@ public class TodoListViewModelFactory implements ViewModelProvider.Factory {
     public <T extends ViewModel> T create(@NonNull Class<T> modelClass) {
         if (modelClass.isAssignableFrom(TodoListViewModel.class)) {
             return (T) new TodoListViewModel(appIdentifier);
-        } else throw new IllegalArgumentException("Unknown ViewModel class");
+        } else {
+            throw new IllegalArgumentException("Unknown ViewModel class");
+        }
     }
 }
