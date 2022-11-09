@@ -41,7 +41,7 @@ public class TodoListViewModel extends ViewModel {
 
         @Override
         public void onSuccess(List<Todo> result) {
-            todoList.postValue((ArrayList<Todo>) result);
+            todoList.postValue(new ArrayList<>(result));
         }
     };
 
