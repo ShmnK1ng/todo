@@ -54,12 +54,11 @@ public class SendTodoRunnable implements Runnable {
                     todo.setUid(todoID);
                 }
                 callback.onSuccess(todo);
-                httpURLConnection.disconnect();
+            } else {
+                callback.onFail();
             }
-            httpURLConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
-            callback.onFail();
         } finally {
             httpURLConnection.disconnect();
         }

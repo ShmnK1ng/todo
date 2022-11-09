@@ -36,11 +36,11 @@ public class GetTodoListRunnable implements Runnable {
                 List<Todo> todoList = todoJsonReader.readJsonStream(inputStream);
                 inputStream.close();
                 callBack.onSuccess(todoList);
+            } else {
+                callBack.onFail();
             }
-            httpURLConnection.disconnect();
         } catch (IOException e) {
             e.printStackTrace();
-            callBack.onFail();
         } finally {
             httpURLConnection.disconnect();
         }

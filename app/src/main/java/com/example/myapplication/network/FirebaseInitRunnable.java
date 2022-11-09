@@ -37,10 +37,11 @@ public class FirebaseInitRunnable implements Runnable {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 APP_ID = todoJsonReader.readJsonFromServer(inputStream);
                 callBack.onSuccess(APP_ID);
+            } else {
+                callBack.onFail();
             }
         } catch (IOException e) {
             e.printStackTrace();
-            callBack.onFail();
         } finally {
             httpURLConnection.disconnect();
         }
