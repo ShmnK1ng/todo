@@ -58,7 +58,7 @@ public class SendTodoRunnable implements Runnable {
                 callback.onFail();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            callback.onFail();
         } finally {
             httpURLConnection.disconnect();
         }

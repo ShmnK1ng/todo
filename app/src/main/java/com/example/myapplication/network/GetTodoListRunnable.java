@@ -40,7 +40,7 @@ public class GetTodoListRunnable implements Runnable {
                 callBack.onFail();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            callBack.onFail();
         } finally {
             httpURLConnection.disconnect();
         }
