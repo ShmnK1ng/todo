@@ -22,7 +22,7 @@ public class Todo implements Parcelable {
             return new Todo[i];
         }
     };
-    private final String uid;
+    private String uid;
     private String todoText;
 
     public Todo(String uid, String todoText) {
@@ -35,8 +35,16 @@ public class Todo implements Parcelable {
         return this.todoText;
     }
 
+    public String getUid() {
+        return this.uid;
+    }
+
     public void setTodoText(String todo_text) {
         this.todoText = todo_text;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Override

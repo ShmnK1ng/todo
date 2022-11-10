@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.network.SendTodoRunnable;
+import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.Callback;
 
-import java.util.UUID;
 
 public class TodoTextNoteViewModel extends ViewModel {
 
@@ -14,6 +16,22 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
     private Todo todo;
+    private final AppIdentifier appIdentifier;
+    private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
+        @Override
+        public void onFail() {
+            //do nothing
+        }
+
+        @Override
+        public void onSuccess(Todo result) {
+            savedTodo.postValue(result);
+        }
+    };
+
+    public TodoTextNoteViewModel(AppIdentifier appIdentifier) {
+        this.appIdentifier = appIdentifier;
+    }
 
     public LiveData<Todo> getSavedTodo() {
         return savedTodo;
@@ -41,15 +59,15 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     public void onButtonClicked(String textTodo) {
         if (todo == null) {
-            String uid = UUID.randomUUID().toString();
-            todo = new Todo(uid, textTodo);
+            todo = new Todo(null, textTodo);
         } else {
             todo.setTodoText(textTodo);
         }
         if (textTodo.length() == 0) {
             invalidInputError.setValue(true);
         } else {
-            savedTodo.setValue(todo);
+            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
+            sentTodoThread.start();
         }
     }
 

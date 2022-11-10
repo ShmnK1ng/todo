@@ -1,5 +1,7 @@
 package com.example.myapplication.network;
 
+import com.example.myapplication.utilities.Callback;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -14,6 +16,11 @@ public class FirebaseInitRunnable implements Runnable {
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
+    private final Callback<String> callBack;
+
+    public FirebaseInitRunnable(Callback<String> callBack) {
+        this.callBack = callBack;
+    }
 
     @Override
     public void run() {
@@ -29,9 +36,12 @@ public class FirebaseInitRunnable implements Runnable {
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 APP_ID = todoJsonReader.readJsonFromServer(inputStream);
+                callBack.onSuccess(APP_ID);
+            } else {
+                callBack.onFail();
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            callBack.onFail();
         } finally {
             httpURLConnection.disconnect();
         }

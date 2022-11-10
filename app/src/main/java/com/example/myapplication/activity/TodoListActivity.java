@@ -1,6 +1,8 @@
 package com.example.myapplication.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -13,11 +15,14 @@ import androidx.recyclerview.widget.StaggeredGridLayoutManager;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.viewmodel.TodoListViewModel;
+import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
+    static final String APP_PREFERENCES = "todo_settings";
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
@@ -34,9 +39,11 @@ public class TodoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();
-        this.viewModel = new ViewModelProvider(this).get(TodoListViewModel.class);
+        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
         viewModel.itemClickEvent().observe(this, todo -> {
             if (todo != null) {
                 startEditTodo(todo);
