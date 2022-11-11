@@ -55,6 +55,15 @@ public class TodoListActivity extends AppCompatActivity {
                 startAddTodo();
             }
         });
+        viewModel.getTodoListEvent().observe(this, isEventStarted -> {
+            if (isEventStarted) {
+                findViewById(R.id.activity_todo_list_progressBar).setVisibility(View.VISIBLE);
+                findViewById(R.id.activity_todo_list_add_note_button).setVisibility(View.GONE);
+            } else {
+                findViewById(R.id.activity_todo_list_progressBar).setVisibility(View.INVISIBLE);
+                findViewById(R.id.activity_todo_list_add_note_button).setVisibility(View.VISIBLE);
+            }
+        });
         findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
     }
 

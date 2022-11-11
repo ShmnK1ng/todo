@@ -20,6 +20,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> goToAddTodo = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
     private final Callback<String> getIDCallback = new Callback<String>() {
         @Override
@@ -42,6 +43,7 @@ public class TodoListViewModel extends ViewModel {
         @Override
         public void onSuccess(List<Todo> result) {
             todoList.postValue(new ArrayList<>(result));
+            getTodoList.postValue(false);
         }
     };
 
@@ -61,7 +63,12 @@ public class TodoListViewModel extends ViewModel {
 
     public TodoListViewModel(AppIdentifier appIdentifier) {
         this.appIdentifier = appIdentifier;
+        getTodoList.setValue(true);
         appInit();
+    }
+
+    public LiveData<Boolean> getTodoListEvent() {
+        return getTodoList;
     }
 
     public LiveData<? extends List<Todo>> getTodoList() {
