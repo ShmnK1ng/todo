@@ -19,6 +19,7 @@ import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
+import com.google.android.material.snackbar.Snackbar;
 
 public class TodoListActivity extends AppCompatActivity {
 
@@ -66,6 +67,11 @@ public class TodoListActivity extends AppCompatActivity {
             }
         });
         findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
+        viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
+            if (isGetTodoListError) {
+                getTodolistError();
+            }
+        });
     }
 
     private void initRecyclerView() {
@@ -86,5 +92,14 @@ public class TodoListActivity extends AppCompatActivity {
         Intent startEditTodo = new Intent(this, TodoTextNoteActivity.class);
         startEditTodo.putExtra(EXTRA_TODO, todo);
         updateNote.launch(startEditTodo);
+    }
+
+    private void getTodolistError() {
+        Snackbar.make(
+                findViewById(R.id.activity_todo_list_constrain_layout),
+                "Failed to load TodoList",
+                Snackbar.LENGTH_LONG
+        ).show();
+        viewModel.resetGetTodoListErrorEvent();
     }
 }
