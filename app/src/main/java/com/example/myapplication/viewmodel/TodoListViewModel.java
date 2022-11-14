@@ -122,4 +122,9 @@ public class TodoListViewModel extends ViewModel {
     public void resetGetTodoListErrorEvent() {
         getTodoListError.setValue(false);
     }
+
+    public void refreshRequest() {
+        Thread refreshTodoList = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
+        refreshTodoList.start();
+    }
 }

@@ -12,6 +12,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
@@ -72,6 +73,11 @@ public class TodoListActivity extends AppCompatActivity {
                 getTodolistError();
             }
         });
+        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
+            viewModel.refreshRequest();
+            swipeRefreshLayout.setRefreshing(false);
+        });
     }
 
     private void initRecyclerView() {
@@ -97,7 +103,7 @@ public class TodoListActivity extends AppCompatActivity {
     private void getTodolistError() {
         Snackbar.make(
                 findViewById(R.id.activity_todo_list_constrain_layout),
-                "Failed to load TodoList",
+                "Failed to load todoList",
                 Snackbar.LENGTH_LONG
         ).show();
         viewModel.resetGetTodoListErrorEvent();

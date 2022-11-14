@@ -20,16 +20,28 @@
         app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_todo_list_recyclerview"
-        android:layout_width="@dimen/activity_todo_list_recyclerview_width"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/activity_todolist_padding_start"
-        android:paddingTop="@dimen/activity_todolist_padding_top"
-        android:paddingEnd="@dimen/activity_todolist_padding_end"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_todo_list_swipe_refresh_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_todo_list_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/activity_todo_list_toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_todo_list_recyclerview"
+            android:layout_width="@dimen/activity_todo_list_recyclerview_width"
+            android:layout_height="wrap_content"
+            android:paddingStart="@dimen/activity_todolist_padding_start"
+            android:paddingTop="@dimen/activity_todolist_padding_top"
+            android:paddingEnd="@dimen/activity_todolist_padding_end"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/activity_todo_list_swipe_refresh_layout" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/activity_todo_list_add_note_button"
