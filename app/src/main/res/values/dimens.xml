@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="item_todo_margin">4dp</dimen>
-    <dimen name="item_todo_card_corner_radius">1dp</dimen>
+    <dimen name="item_todo_card_corner_radius">10dp</dimen>
     <dimen name="item_todo_сard_padding">8dp</dimen>
     <dimen name="activity_todo_text_note_edit_text">0dp</dimen>
     <dimen name="activity_todo_text_note_edit_text_width">0dp</dimen>
