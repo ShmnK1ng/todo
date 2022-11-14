@@ -8,5 +8,7 @@
     <string name="activity_todo_text_note_dialog_title">Error</string>
     <string name="activity_todo_text_note_dialog_message">Please enter note text</string>
     <string name="activity_todo_text_note_dialog_button_tittle">OK</string>
+    <string name="activity_todo_text_note_network_error_dialog_title">Network connection error</string>
+    <string name="activity_todo_text_note_network_error_dialog_message">Please check your network connection</string>
 
 </resources>

@@ -7,9 +7,11 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,6 +28,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
     private TodoTextNoteViewModel viewModel;
+    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,23 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         viewModel.getTodoText().observe(this, this::setTodoText);
         viewModel.getSavedTodo().observe(this, this::sendTodoItem);
+        viewModel.checkConnectionState().observe(this, checkStarted -> {
+            if (checkStarted) {
+                if (!isNetworkConnected()) {
+                    networkError();
+                    viewModel.resetCheckConnectionEvent();
+                }
+            }
+        });
+        viewModel.sendTodoEvent().observe(this, isTodoSent -> {
+            if (isTodoSent) {
+                findViewById(R.id.activity_todo_text_note_progressBar).setVisibility(View.VISIBLE);
+                findViewById(R.id.activity_todo_text_note_toolbar).setEnabled(false);
+            } else {
+                findViewById(R.id.activity_todo_text_note_progressBar).setVisibility(View.INVISIBLE);
+                findViewById(R.id.activity_todo_text_note_toolbar).setEnabled(true);
+            }
+        });
         viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
             if (isInvalidTextInput) {
                 InvalidInputError();
@@ -86,7 +106,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     }
 
     private void InvalidInputError() {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setTitle(R.string.activity_todo_text_note_dialog_title);
         alertDialog.setMessage(getString(R.string.activity_todo_text_note_dialog_message));
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
@@ -100,5 +120,20 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         if (!todoText.equals(editText.getText().toString())) {
             editText.setText(todoText);
         }
+    }
+
+    private void networkError() {
+        alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(R.string.activity_todo_text_note_network_error_dialog_title);
+        alertDialog.setMessage(getString(R.string.activity_todo_text_note_network_error_dialog_message));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
+                (dialogInterface, i) -> dialogInterface.dismiss()
+        );
+        alertDialog.show();
+    }
+
+    private boolean isNetworkConnected() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        return cm.getActiveNetworkInfo() != null;
     }
 }

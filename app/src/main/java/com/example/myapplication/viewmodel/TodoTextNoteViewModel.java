@@ -13,6 +13,8 @@ import com.example.myapplication.utilities.Callback;
 public class TodoTextNoteViewModel extends ViewModel {
 
     private final MutableLiveData<Todo> savedTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> sendTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> connectionState = new MutableLiveData<>();
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
     private Todo todo;
@@ -26,11 +28,20 @@ public class TodoTextNoteViewModel extends ViewModel {
         @Override
         public void onSuccess(Todo result) {
             savedTodo.postValue(result);
+            sendTodo.postValue(false);
         }
     };
 
     public TodoTextNoteViewModel(AppIdentifier appIdentifier) {
         this.appIdentifier = appIdentifier;
+    }
+
+    public LiveData<Boolean> sendTodoEvent() {
+        return sendTodo;
+    }
+
+    public LiveData<Boolean> checkConnectionState() {
+        return connectionState;
     }
 
     public LiveData<Todo> getSavedTodo() {
@@ -58,6 +69,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     }
 
     public void onButtonClicked(String textTodo) {
+        connectionState.setValue(true);
         if (todo == null) {
             todo = new Todo(null, textTodo);
         } else {
@@ -66,12 +78,19 @@ public class TodoTextNoteViewModel extends ViewModel {
         if (textTodo.length() == 0) {
             invalidInputError.setValue(true);
         } else {
-            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
-            sentTodoThread.start();
+            if (Boolean.TRUE.equals(connectionState.getValue())) {
+                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
+                sentTodoThread.start();
+                sendTodo.setValue(true);
+            }
         }
     }
 
     public void resetInvalidInputEvent() {
         invalidInputError.setValue(false);
+    }
+
+    public void resetCheckConnectionEvent() {
+        connectionState.setValue(false);
     }
 }
