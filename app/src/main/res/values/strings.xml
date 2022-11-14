@@ -10,5 +10,7 @@
     <string name="activity_todo_text_note_dialog_button_tittle">OK</string>
     <string name="activity_todo_text_note_network_error_dialog_title">Network connection error</string>
     <string name="activity_todo_text_note_network_error_dialog_message">Please check your network connection</string>
+    <string name="activity_todo_text_sending_message_error_dialog_title">Sending message error</string>
+    <string name="activity_todo_text_sending_message_error_dialog_message">Failed to save message to server</string>
 
 </resources>

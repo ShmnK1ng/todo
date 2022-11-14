@@ -17,12 +17,13 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final MutableLiveData<Boolean> connectionState = new MutableLiveData<>();
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> sendingError = new MutableLiveData<>();
     private Todo todo;
     private final AppIdentifier appIdentifier;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
-            //do nothing
+            sendingError.postValue(true);
         }
 
         @Override
@@ -54,6 +55,10 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     public LiveData<Boolean> invalidInputEvent() {
         return invalidInputError;
+    }
+
+    public LiveData<Boolean> sendingErrorEvent() {
+        return sendingError;
     }
 
     public void setExtraTodo(Todo todo) {
@@ -92,5 +97,9 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     public void resetCheckConnectionEvent() {
         connectionState.setValue(false);
+    }
+
+    public void resetSendingErrorEvent() {
+        sendingError.setValue(false);
     }
 }

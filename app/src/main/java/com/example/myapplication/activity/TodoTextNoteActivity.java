@@ -63,6 +63,11 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 InvalidInputError();
             }
         });
+        viewModel.sendingErrorEvent().observe(this, isSendingError -> {
+            if (isSendingError) {
+                sendingError();
+            }
+        });
         editTextChangedListener();
         onButtonClickListener();
         navigationClickListener();
@@ -129,6 +134,18 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
                 (dialogInterface, i) -> dialogInterface.dismiss()
         );
+        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetCheckConnectionEvent());
+        alertDialog.show();
+    }
+
+    private void sendingError() {
+        alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setTitle(R.string.activity_todo_text_sending_message_error_dialog_title);
+        alertDialog.setMessage(getString(R.string.activity_todo_text_sending_message_error_dialog_title));
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
+                (dialogInterface, i) -> dialogInterface.dismiss()
+        );
+        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetSendingErrorEvent());
         alertDialog.show();
     }
 
