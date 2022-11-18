@@ -26,11 +26,13 @@ public class TodoListViewModel extends ViewModel {
         @Override
         public void onFail() {
             getTodoListError.postValue(true);
+            getTodoList.postValue(false);
         }
 
         @Override
         public void onSuccess(String result) {
             appIdentifier.setID(result);
+            getTodoList.postValue(false);
         }
     };
 
@@ -38,6 +40,7 @@ public class TodoListViewModel extends ViewModel {
         @Override
         public void onFail() {
             getTodoListError.postValue(true);
+            getTodoList.postValue(false);
         }
 
         @Override
@@ -67,7 +70,7 @@ public class TodoListViewModel extends ViewModel {
         appInit();
     }
 
-    public LiveData<Boolean> getTodoListEvent() {
+    public LiveData<Boolean> getTodoListProgressEvent() {
         return getTodoList;
     }
 

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -20,6 +21,7 @@ import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 public class TodoListActivity extends AppCompatActivity {
@@ -29,7 +31,6 @@ public class TodoListActivity extends AppCompatActivity {
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
-
     private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 Intent intent = result.getData();
@@ -58,16 +59,18 @@ public class TodoListActivity extends AppCompatActivity {
                 startAddTodo();
             }
         });
-        viewModel.getTodoListEvent().observe(this, isEventStarted -> {
+        FloatingActionButton addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
+        ProgressBar progressBar = findViewById(R.id.activity_todo_list_progressBar);
+        viewModel.getTodoListProgressEvent().observe(this, isEventStarted -> {
             if (isEventStarted) {
-                findViewById(R.id.activity_todo_list_progressBar).setVisibility(View.VISIBLE);
-                findViewById(R.id.activity_todo_list_add_note_button).setVisibility(View.GONE);
+                progressBar.setVisibility(View.VISIBLE);
+                addNoteButton.setVisibility(View.GONE);
             } else {
-                findViewById(R.id.activity_todo_list_progressBar).setVisibility(View.INVISIBLE);
-                findViewById(R.id.activity_todo_list_add_note_button).setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.GONE);
+                addNoteButton.setVisibility(View.VISIBLE);
             }
         });
-        findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
+        addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
         viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
             if (isGetTodoListError) {
                 getTodolistError();
