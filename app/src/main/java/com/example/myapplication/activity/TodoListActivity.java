@@ -32,6 +32,8 @@ public class TodoListActivity extends AppCompatActivity {
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
+    private FloatingActionButton addNoteButton;
+
     private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
                 Intent intent = result.getData();
@@ -44,39 +46,12 @@ public class TodoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();
-        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
-        viewModel.itemClickEvent().observe(this, todo -> {
-            if (todo != null) {
-                startEditTodo(todo);
-            }
-        });
-        viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
-        viewModel.addTodoEvent().observe(this, isItemClicked -> {
-            if (isItemClicked) {
-                startAddTodo();
-            }
-        });
-        FloatingActionButton addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
-        ProgressBar progressBar = findViewById(R.id.activity_todo_list_progressBar);
-        viewModel.getTodoListProgressEvent().observe(this, isEventStarted -> {
-            if (isEventStarted) {
-                progressBar.setVisibility(View.VISIBLE);
-                addNoteButton.setVisibility(View.GONE);
-            } else {
-                progressBar.setVisibility(View.GONE);
-                addNoteButton.setVisibility(View.VISIBLE);
-            }
-        });
+        viewModelInit();
+        setObservers();
+        this.addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
         addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
-        viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
-            if (isGetTodoListError) {
-                getTodolistError();
-            }
-        });
         SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> {
             viewModel.refreshRequest();
@@ -108,5 +83,40 @@ public class TodoListActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetGetTodoListErrorEvent());
         new AlertDialogSetter().setAlertDialog(this, AlertDialogSetter.GET_TODO_LIST_ERROR, alertDialog);
+    }
+
+    private void viewModelInit() {
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
+        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
+    }
+
+    private void setObservers() {
+        viewModel.itemClickEvent().observe(this, todo -> {
+            if (todo != null) {
+                startEditTodo(todo);
+            }
+        });
+        viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
+        viewModel.addTodoEvent().observe(this, isItemClicked -> {
+            if (isItemClicked) {
+                startAddTodo();
+            }
+        });
+        ProgressBar progressBar = findViewById(R.id.activity_todo_list_progressBar);
+        viewModel.getTodoListProgressEvent().observe(this, isEventStarted -> {
+            if (isEventStarted) {
+                progressBar.setVisibility(View.VISIBLE);
+                addNoteButton.setVisibility(View.GONE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                addNoteButton.setVisibility(View.VISIBLE);
+            }
+        });
+        viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
+            if (isGetTodoListError) {
+                getTodolistError();
+            }
+        });
     }
 }

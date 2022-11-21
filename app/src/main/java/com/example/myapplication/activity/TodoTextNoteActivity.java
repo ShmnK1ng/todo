@@ -16,6 +16,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -32,45 +33,17 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
     private TodoTextNoteViewModel viewModel;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_todo_text_note);
-        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
-        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper)).get(TodoTextNoteViewModel.class);
-        viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
-        viewModel.getTodoText().observe(this, this::setTodoText);
-        viewModel.getSavedTodo().observe(this, this::sendTodoItem);
-        viewModel.checkConnectionState().observe(this, checkStarted -> {
-            if (checkStarted) {
-                if (!isNetworkConnected()) {
-                    setAlertDialog(NETWORK_ERROR);
-                    viewModel.resetEvent();
-                }
-            }
-        });
-        viewModel.sendTodoEvent().observe(this, isTodoSent -> {
-            if (isTodoSent) {
-                findViewById(R.id.activity_todo_text_note_progressBar).setVisibility(View.VISIBLE);
-                findViewById(R.id.activity_todo_text_note_toolbar).setEnabled(false);
-            } else {
-                findViewById(R.id.activity_todo_text_note_progressBar).setVisibility(View.INVISIBLE);
-                findViewById(R.id.activity_todo_text_note_toolbar).setEnabled(true);
-            }
-        });
-        viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
-            if (isInvalidTextInput) {
-                setAlertDialog(INVALID_INPUT_ERROR);
-            }
-        });
-        viewModel.sendingErrorEvent().observe(this, isSendingError -> {
-            if (isSendingError) {
-                setAlertDialog(SENDING_ERROR);
-            }
-        });
+        this.toolbar = findViewById(R.id.activity_todo_text_note_toolbar);
+        viewModelInit();
+        setObservers();
+        viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
         editTextChangedListener();
         onButtonClickListener();
         navigationClickListener();
@@ -103,14 +76,14 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     }
 
     private void onButtonClickListener() {
-        ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setOnMenuItemClickListener(item -> {
+        toolbar.setOnMenuItemClickListener(item -> {
             viewModel.onButtonClicked(editText.getText().toString());
             return true;
         });
     }
 
     private void navigationClickListener() {
-        ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> finish());
+        toolbar.setNavigationOnClickListener(item -> finish());
     }
 
     private void setTodoText(String todoText) {
@@ -128,5 +101,44 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetEvent());
         new AlertDialogSetter().setAlertDialog(this, id, alertDialog);
+    }
+
+    private void viewModelInit() {
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
+        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper)).get(TodoTextNoteViewModel.class);
+    }
+
+    private void setObservers() {
+        viewModel.getTodoText().observe(this, this::setTodoText);
+        viewModel.getSavedTodo().observe(this, this::sendTodoItem);
+        viewModel.checkConnectionState().observe(this, checkStarted -> {
+            if (checkStarted) {
+                if (!isNetworkConnected()) {
+                    setAlertDialog(NETWORK_ERROR);
+                    viewModel.resetEvent();
+                }
+            }
+        });
+        ProgressBar progressBar = findViewById(R.id.activity_todo_text_note_progressBar);
+        viewModel.sendTodoEvent().observe(this, isTodoSent -> {
+            if (isTodoSent) {
+                progressBar.setVisibility(View.VISIBLE);
+                toolbar.setEnabled(false);
+            } else {
+                progressBar.setVisibility(View.INVISIBLE);
+                toolbar.setEnabled(true);
+            }
+        });
+        viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
+            if (isInvalidTextInput) {
+                setAlertDialog(INVALID_INPUT_ERROR);
+            }
+        });
+        viewModel.sendingErrorEvent().observe(this, isSendingError -> {
+            if (isSendingError) {
+                setAlertDialog(SENDING_ERROR);
+            }
+        });
     }
 }
