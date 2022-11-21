@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.ActionMenuItemView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
@@ -34,6 +35,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     private EditText editText;
     private TodoTextNoteViewModel viewModel;
     private Toolbar toolbar;
+    private ActionMenuItemView sendTodoButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +43,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_todo_text_note);
         this.editText = findViewById(R.id.activity_todo_text_note_edit_text);
         this.toolbar = findViewById(R.id.activity_todo_text_note_toolbar);
+        this.sendTodoButton = toolbar.findViewById(R.id.menu_button);
         viewModelInit();
         setObservers();
         viewModel.setExtraTodo(getIntent().getParcelableExtra(EXTRA_TODO));
@@ -93,11 +96,6 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         }
     }
 
-    private boolean isNetworkConnected() {
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        return cm.getActiveNetworkInfo() != null;
-    }
-
     private void setAlertDialog(String id) {
         AlertDialog alertDialog = new AlertDialog.Builder(this).create();
         alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetEvent());
@@ -123,10 +121,10 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         viewModel.sendTodoEvent().observe(this, isTodoSent -> {
             if (isTodoSent) {
                 progressBar.setVisibility(View.VISIBLE);
-                toolbar.setEnabled(false);
+                sendTodoButton.setVisibility(View.GONE);
             } else {
-                progressBar.setVisibility(View.INVISIBLE);
-                toolbar.setEnabled(true);
+                progressBar.setVisibility(View.GONE);
+                sendTodoButton.setVisibility(View.VISIBLE);
             }
         });
         viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
