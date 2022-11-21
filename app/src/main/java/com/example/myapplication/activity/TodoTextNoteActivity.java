@@ -2,6 +2,9 @@ package com.example.myapplication.activity;
 
 import static com.example.myapplication.activity.TodoListActivity.APP_PREFERENCES;
 import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
+import static com.example.myapplication.utilities.AlertDialogSetter.INVALID_INPUT_ERROR;
+import static com.example.myapplication.utilities.AlertDialogSetter.NETWORK_ERROR;
+import static com.example.myapplication.utilities.AlertDialogSetter.SENDING_ERROR;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -21,6 +24,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapplication.R;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
+import com.example.myapplication.utilities.AlertDialogSetter;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
 
@@ -28,7 +32,6 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
     private EditText editText;
     private TodoTextNoteViewModel viewModel;
-    private AlertDialog alertDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,8 +47,8 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         viewModel.checkConnectionState().observe(this, checkStarted -> {
             if (checkStarted) {
                 if (!isNetworkConnected()) {
-                    networkError();
-                    viewModel.resetCheckConnectionEvent();
+                    setAlertDialog(NETWORK_ERROR);
+                    viewModel.resetEvent();
                 }
             }
         });
@@ -60,12 +63,12 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         });
         viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
             if (isInvalidTextInput) {
-                InvalidInputError();
+                setAlertDialog(INVALID_INPUT_ERROR);
             }
         });
         viewModel.sendingErrorEvent().observe(this, isSendingError -> {
             if (isSendingError) {
-                sendingError();
+                setAlertDialog(SENDING_ERROR);
             }
         });
         editTextChangedListener();
@@ -110,47 +113,20 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         ((Toolbar) findViewById(R.id.activity_todo_text_note_toolbar)).setNavigationOnClickListener(item -> finish());
     }
 
-    private void InvalidInputError() {
-        alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(R.string.activity_todo_text_note_dialog_title);
-        alertDialog.setMessage(getString(R.string.activity_todo_text_note_dialog_message));
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
-                (dialogInterface, i) -> dialogInterface.dismiss()
-        );
-        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetInvalidInputEvent());
-        alertDialog.show();
-    }
-
     private void setTodoText(String todoText) {
         if (!todoText.equals(editText.getText().toString())) {
             editText.setText(todoText);
         }
     }
 
-    private void networkError() {
-        alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(R.string.activity_todo_text_note_network_error_dialog_title);
-        alertDialog.setMessage(getString(R.string.activity_todo_text_note_network_error_dialog_message));
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
-                (dialogInterface, i) -> dialogInterface.dismiss()
-        );
-        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetCheckConnectionEvent());
-        alertDialog.show();
-    }
-
-    private void sendingError() {
-        alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setTitle(R.string.activity_todo_text_sending_message_error_dialog_title);
-        alertDialog.setMessage(getString(R.string.activity_todo_text_sending_message_error_dialog_title));
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, getString(R.string.activity_todo_text_note_dialog_button_tittle),
-                (dialogInterface, i) -> dialogInterface.dismiss()
-        );
-        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetSendingErrorEvent());
-        alertDialog.show();
-    }
-
     private boolean isNetworkConnected() {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         return cm.getActiveNetworkInfo() != null;
+    }
+
+    private void setAlertDialog(String id) {
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetEvent());
+        new AlertDialogSetter().setAlertDialog(this, id, alertDialog);
     }
 }

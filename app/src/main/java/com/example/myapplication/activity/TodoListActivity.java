@@ -1,5 +1,6 @@
 package com.example.myapplication.activity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -19,10 +20,10 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
+import com.example.myapplication.utilities.AlertDialogSetter;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 public class TodoListActivity extends AppCompatActivity {
 
@@ -104,11 +105,8 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void getTodolistError() {
-        Snackbar.make(
-                findViewById(R.id.activity_todo_list_constrain_layout),
-                "Failed to load todoList",
-                Snackbar.LENGTH_LONG
-        ).show();
-        viewModel.resetGetTodoListErrorEvent();
+        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
+        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetGetTodoListErrorEvent());
+        new AlertDialogSetter().setAlertDialog(this, AlertDialogSetter.GET_TODO_LIST_ERROR, alertDialog);
     }
 }

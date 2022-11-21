@@ -91,15 +91,9 @@ public class TodoTextNoteViewModel extends ViewModel {
         }
     }
 
-    public void resetInvalidInputEvent() {
+    public void resetEvent() {
         invalidInputError.setValue(false);
-    }
-
-    public void resetCheckConnectionEvent() {
         connectionState.setValue(false);
-    }
-
-    public void resetSendingErrorEvent() {
         sendingError.setValue(false);
     }
 }
