@@ -33,6 +33,7 @@ public class TodoListActivity extends AppCompatActivity {
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
     private FloatingActionButton addNoteButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -52,11 +53,8 @@ public class TodoListActivity extends AppCompatActivity {
         setObservers();
         this.addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
         addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
-        SwipeRefreshLayout swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(() -> {
-            viewModel.refreshRequest();
-            swipeRefreshLayout.setRefreshing(false);
-        });
+        this.swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refreshRequest());
     }
 
     private void initRecyclerView() {
@@ -118,5 +116,6 @@ public class TodoListActivity extends AppCompatActivity {
                 getTodolistError();
             }
         });
+        viewModel.refreshTodoListEvent().observe(this, isRefreshed -> swipeRefreshLayout.setRefreshing(false));
     }
 }
