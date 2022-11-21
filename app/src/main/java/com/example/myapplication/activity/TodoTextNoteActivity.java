@@ -77,7 +77,8 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
     private void onButtonClickListener() {
         toolbar.setOnMenuItemClickListener(item -> {
-            viewModel.onButtonClicked(editText.getText().toString());
+            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+            viewModel.onButtonClicked(editText.getText().toString(), cm);
             return true;
         });
     }
@@ -112,12 +113,10 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     private void setObservers() {
         viewModel.getTodoText().observe(this, this::setTodoText);
         viewModel.getSavedTodo().observe(this, this::sendTodoItem);
-        viewModel.checkConnectionState().observe(this, checkStarted -> {
-            if (checkStarted) {
-                if (!isNetworkConnected()) {
-                    setAlertDialog(NETWORK_ERROR);
-                    viewModel.resetEvent();
-                }
+        viewModel.checkConnectionState().observe(this, isNotConnected -> {
+            if (isNotConnected) {
+                setAlertDialog(NETWORK_ERROR);
+                viewModel.resetEvent();
             }
         });
         ProgressBar progressBar = findViewById(R.id.activity_todo_text_note_progressBar);
