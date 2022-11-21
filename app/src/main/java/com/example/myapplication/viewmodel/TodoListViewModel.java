@@ -42,6 +42,7 @@ public class TodoListViewModel extends ViewModel {
         public void onFail() {
             getTodoListError.postValue(true);
             getTodoList.postValue(false);
+            refreshTodoList.postValue(true);
         }
 
         @Override
