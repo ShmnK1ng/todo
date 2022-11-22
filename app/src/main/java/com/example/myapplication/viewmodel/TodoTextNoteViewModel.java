@@ -25,6 +25,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         @Override
         public void onFail() {
             sendingError.postValue(true);
+            sendTodo.postValue(false);
         }
 
         @Override
