@@ -1,7 +1,5 @@
 package com.example.myapplication.viewmodel;
 
-import android.net.ConnectivityManager;
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -10,6 +8,7 @@ import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.sharedpreferences.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.ConnectionNetworkInfo;
 
 
 public class TodoTextNoteViewModel extends ViewModel {
@@ -75,7 +74,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         editTodoText.setValue(editedText);
     }
 
-    public void onButtonClicked(String textTodo, ConnectivityManager cm) {
+    public void onButtonClicked(String textTodo, ConnectionNetworkInfo connectionNetworkInfo) {
         if (todo == null) {
             todo = new Todo(null, textTodo);
         } else {
@@ -84,7 +83,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         if (textTodo.length() == 0) {
             invalidInputError.setValue(true);
         } else {
-            if (cm.getActiveNetworkInfo() != null && cm.getActiveNetworkInfo().isConnected()) {
+            if (connectionNetworkInfo.isConnected()) {
                 Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
                 sentTodoThread.start();
                 sendTodo.setValue(true);

@@ -27,6 +27,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.utilities.AlertDialogSetter;
+import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
 
@@ -81,7 +82,8 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     private void onButtonClickListener() {
         toolbar.setOnMenuItemClickListener(item -> {
             ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            viewModel.onButtonClicked(editText.getText().toString(), cm);
+            ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
+            viewModel.onButtonClicked(editText.getText().toString(), connectivityManagerWrapper);
             return true;
         });
     }
