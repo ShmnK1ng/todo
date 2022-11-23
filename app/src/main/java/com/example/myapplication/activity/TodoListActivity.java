@@ -1,6 +1,5 @@
 package com.example.myapplication.activity;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,7 +19,7 @@ import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
-import com.example.myapplication.utilities.AlertDialogSetter;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -51,9 +50,9 @@ public class TodoListActivity extends AppCompatActivity {
         initRecyclerView();
         viewModelInit();
         setObservers();
-        this.addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
+        addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
         addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
-        this.swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
+        swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refreshRequest());
     }
 
@@ -78,9 +77,7 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void getTodolistError() {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetGetTodoListErrorEvent());
-        new AlertDialogSetter().setAlertDialog(this, AlertDialogSetter.GET_TODO_LIST_ERROR, alertDialog);
+        AlertDialogUtils.showAlertDialog(this, AlertDialogUtils.GET_TODO_LIST_ERROR, dialog -> viewModel.resetGetTodoListErrorEvent());
     }
 
     private void viewModelInit() {
@@ -116,6 +113,6 @@ public class TodoListActivity extends AppCompatActivity {
                 getTodolistError();
             }
         });
-        viewModel.refreshTodoListEvent().observe(this, isRefreshed -> swipeRefreshLayout.setRefreshing(false));
+        viewModel.refreshTodoListEvent().observe(this, refreshStarted -> swipeRefreshLayout.setRefreshing(refreshStarted));
     }
 }

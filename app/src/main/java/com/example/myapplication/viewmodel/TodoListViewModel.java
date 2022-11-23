@@ -42,14 +42,14 @@ public class TodoListViewModel extends ViewModel {
         public void onFail() {
             getTodoListError.postValue(true);
             getTodoList.postValue(false);
-            refreshTodoList.postValue(true);
+            refreshTodoList.postValue(false);
         }
 
         @Override
         public void onSuccess(List<Todo> result) {
             todoList.postValue(new ArrayList<>(result));
             getTodoList.postValue(false);
-            refreshTodoList.postValue(true);
+            refreshTodoList.postValue(false);
         }
     };
 
@@ -134,7 +134,8 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void refreshRequest() {
-        Thread refreshTodoList = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
-        refreshTodoList.start();
+        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
+        refreshTodoListThread.start();
+        refreshTodoList.setValue(true);
     }
 }

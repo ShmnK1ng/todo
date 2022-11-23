@@ -2,11 +2,10 @@ package com.example.myapplication.activity;
 
 import static com.example.myapplication.activity.TodoListActivity.APP_PREFERENCES;
 import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
-import static com.example.myapplication.utilities.AlertDialogSetter.INVALID_INPUT_ERROR;
-import static com.example.myapplication.utilities.AlertDialogSetter.NETWORK_ERROR;
-import static com.example.myapplication.utilities.AlertDialogSetter.SENDING_ERROR;
+import static com.example.myapplication.utilities.AlertDialogUtils.INVALID_INPUT_ERROR;
+import static com.example.myapplication.utilities.AlertDialogUtils.NETWORK_ERROR;
+import static com.example.myapplication.utilities.AlertDialogUtils.SENDING_ERROR;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -26,7 +25,7 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapplication.R;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
-import com.example.myapplication.utilities.AlertDialogSetter;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
@@ -81,9 +80,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
 
     private void onButtonClickListener() {
         toolbar.setOnMenuItemClickListener(item -> {
-            ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-            ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
-            viewModel.onButtonClicked(editText.getText().toString(), connectivityManagerWrapper);
+            viewModel.onButtonClicked(editText.getText().toString());
             return true;
         });
     }
@@ -98,16 +95,16 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void setAlertDialog(String id) {
-        AlertDialog alertDialog = new AlertDialog.Builder(this).create();
-        alertDialog.setOnDismissListener(dialogInterface -> viewModel.resetEvent());
-        new AlertDialogSetter().setAlertDialog(this, id, alertDialog);
+    private void showAlertDialog(String id) {
+        AlertDialogUtils.showAlertDialog(this, id, dialog -> viewModel.resetEvent());
     }
 
     private void viewModelInit() {
         SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
         SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
-        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper)).get(TodoTextNoteViewModel.class);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
+        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper, connectivityManagerWrapper)).get(TodoTextNoteViewModel.class);
     }
 
     private void setObservers() {
@@ -115,8 +112,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         viewModel.getSavedTodo().observe(this, this::sendTodoItem);
         viewModel.checkConnectionState().observe(this, isNotConnected -> {
             if (isNotConnected) {
-                setAlertDialog(NETWORK_ERROR);
-                viewModel.resetEvent();
+                showAlertDialog(NETWORK_ERROR);
             }
         });
         ProgressBar progressBar = findViewById(R.id.activity_todo_text_note_progressBar);
@@ -131,12 +127,12 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         });
         viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
             if (isInvalidTextInput) {
-                setAlertDialog(INVALID_INPUT_ERROR);
+                showAlertDialog(INVALID_INPUT_ERROR);
             }
         });
         viewModel.sendingErrorEvent().observe(this, isSendingError -> {
             if (isSendingError) {
-                setAlertDialog(SENDING_ERROR);
+                showAlertDialog(SENDING_ERROR);
             }
         });
     }

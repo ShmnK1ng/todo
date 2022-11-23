@@ -21,6 +21,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final MutableLiveData<Boolean> sendingError = new MutableLiveData<>();
     private Todo todo;
     private final AppIdentifier appIdentifier;
+    private final ConnectionNetworkInfo connectionNetworkInfo;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
@@ -35,8 +36,9 @@ public class TodoTextNoteViewModel extends ViewModel {
         }
     };
 
-    public TodoTextNoteViewModel(AppIdentifier appIdentifier) {
+    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo) {
         this.appIdentifier = appIdentifier;
+        this.connectionNetworkInfo = connectionNetworkInfo;
     }
 
     public LiveData<Boolean> sendTodoEvent() {
@@ -75,7 +77,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         editTodoText.setValue(editedText);
     }
 
-    public void onButtonClicked(String textTodo, ConnectionNetworkInfo connectionNetworkInfo) {
+    public void onButtonClicked(String textTodo) {
         if (todo == null) {
             todo = new Todo(null, textTodo);
         } else {
