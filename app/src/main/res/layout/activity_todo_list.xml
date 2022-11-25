@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@id/activity_todo_list_constrain_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -19,16 +20,24 @@
         app:titleTextColor="@color/white"
         tools:ignore="MissingConstraints" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/activity_todo_list_recyclerview"
-        android:layout_width="@dimen/activity_todo_list_recyclerview_width"
-        android:layout_height="wrap_content"
-        android:paddingStart="@dimen/activity_todolist_padding_start"
-        android:paddingTop="@dimen/activity_todolist_padding_top"
-        android:paddingEnd="@dimen/activity_todolist_padding_end"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/activity_todo_list_swipe_refresh_layout"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/activity_todo_list_toolbar" />
+        app:layout_constraintTop_toBottomOf="@id/activity_todo_list_toolbar">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activity_todo_list_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="@dimen/activity_todolist_padding_start"
+            android:paddingTop="@dimen/activity_todolist_padding_top"
+            android:paddingEnd="@dimen/activity_todolist_padding_end" />
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/activity_todo_list_add_note_button"
@@ -43,5 +52,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_baseline_add_24"
         tools:ignore="ContentDescription" />
+
+    <ProgressBar
+        android:id="@+id/activity_todo_list_progressBar"
+        style="?android:attr/progressBarStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/activity_todo_list_toolbar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

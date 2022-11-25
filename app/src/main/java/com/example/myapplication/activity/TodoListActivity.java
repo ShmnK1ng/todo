@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
@@ -11,13 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 public class TodoListActivity extends AppCompatActivity {
 
@@ -26,6 +31,8 @@ public class TodoListActivity extends AppCompatActivity {
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
+    private FloatingActionButton addNoteButton;
+    private SwipeRefreshLayout swipeRefreshLayout;
 
     private final ActivityResultLauncher<Intent> updateNote = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
             result -> {
@@ -39,23 +46,14 @@ public class TodoListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
         setContentView(R.layout.activity_todo_list);
         initRecyclerView();
-        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
-        viewModel.itemClickEvent().observe(this, todo -> {
-            if (todo != null) {
-                startEditTodo(todo);
-            }
-        });
-        viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
-        viewModel.addTodoEvent().observe(this, isItemClicked -> {
-            if (isItemClicked) {
-                startAddTodo();
-            }
-        });
-        findViewById(R.id.activity_todo_list_add_note_button).setOnClickListener(view -> viewModel.addTodoClicked());
+        viewModelInit();
+        setObservers();
+        addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
+        addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
+        swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
+        swipeRefreshLayout.setOnRefreshListener(() -> viewModel.refreshRequest());
     }
 
     private void initRecyclerView() {
@@ -76,5 +74,45 @@ public class TodoListActivity extends AppCompatActivity {
         Intent startEditTodo = new Intent(this, TodoTextNoteActivity.class);
         startEditTodo.putExtra(EXTRA_TODO, todo);
         updateNote.launch(startEditTodo);
+    }
+
+    private void getTodolistError() {
+        AlertDialogUtils.showAlertDialog(this, AlertDialogUtils.GET_TODO_LIST_ERROR, dialog -> viewModel.resetGetTodoListErrorEvent());
+    }
+
+    private void viewModelInit() {
+        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
+        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
+        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
+    }
+
+    private void setObservers() {
+        viewModel.itemClickEvent().observe(this, todo -> {
+            if (todo != null) {
+                startEditTodo(todo);
+            }
+        });
+        viewModel.getTodoList().observe(this, todoAdapter::refreshTodoList);
+        viewModel.addTodoEvent().observe(this, isItemClicked -> {
+            if (isItemClicked) {
+                startAddTodo();
+            }
+        });
+        ProgressBar progressBar = findViewById(R.id.activity_todo_list_progressBar);
+        viewModel.getTodoListProgressEvent().observe(this, isEventStarted -> {
+            if (isEventStarted) {
+                progressBar.setVisibility(View.VISIBLE);
+                addNoteButton.setVisibility(View.GONE);
+            } else {
+                progressBar.setVisibility(View.GONE);
+                addNoteButton.setVisibility(View.VISIBLE);
+            }
+        });
+        viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
+            if (isGetTodoListError) {
+                getTodolistError();
+            }
+        });
+        viewModel.refreshTodoListEvent().observe(this, refreshStarted -> swipeRefreshLayout.setRefreshing(refreshStarted));
     }
 }

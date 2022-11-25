@@ -1,6 +1,5 @@
 package com.example.myapplication.viewmodel;
 
-
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -20,28 +19,37 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> goToAddTodo = new MutableLiveData<>();
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
     private final Callback<String> getIDCallback = new Callback<String>() {
         @Override
         public void onFail() {
-            //do nothing
+            getTodoListError.postValue(true);
+            getTodoList.postValue(false);
         }
 
         @Override
         public void onSuccess(String result) {
             appIdentifier.setID(result);
+            getTodoList.postValue(false);
         }
     };
 
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
         public void onFail() {
-            //do nothing
+            getTodoListError.postValue(true);
+            getTodoList.postValue(false);
+            refreshTodoList.postValue(false);
         }
 
         @Override
         public void onSuccess(List<Todo> result) {
             todoList.postValue(new ArrayList<>(result));
+            getTodoList.postValue(false);
+            refreshTodoList.postValue(false);
         }
     };
 
@@ -61,7 +69,16 @@ public class TodoListViewModel extends ViewModel {
 
     public TodoListViewModel(AppIdentifier appIdentifier) {
         this.appIdentifier = appIdentifier;
+        getTodoList.setValue(true);
         appInit();
+    }
+
+    public LiveData<Boolean> refreshTodoListEvent() {
+        return refreshTodoList;
+    }
+
+    public LiveData<Boolean> getTodoListProgressEvent() {
+        return getTodoList;
     }
 
     public LiveData<? extends List<Todo>> getTodoList() {
@@ -74,6 +91,10 @@ public class TodoListViewModel extends ViewModel {
 
     public LiveData<Todo> itemClickEvent() {
         return goToEditTodo;
+    }
+
+    public LiveData<Boolean> getTodoListErrorEvent() {
+        return getTodoListError;
     }
 
     public void addTodoClicked() {
@@ -106,5 +127,15 @@ public class TodoListViewModel extends ViewModel {
     public void appInit() {
         Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitCallback));
         appInitThread.start();
+    }
+
+    public void resetGetTodoListErrorEvent() {
+        getTodoListError.setValue(false);
+    }
+
+    public void refreshRequest() {
+        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
+        refreshTodoListThread.start();
+        refreshTodoList.setValue(true);
     }
 }

@@ -12,7 +12,7 @@
         android:layout_margin="@dimen/item_todo_margin"
         app:cardBackgroundColor="@color/item_selector"
         app:cardCornerRadius="@dimen/item_todo_card_corner_radius"
-        app:contentPadding="@dimen/item_todo_сard_padding"
+        app:contentPadding="@dimen/item_todo_card_padding"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -8,29 +8,45 @@ import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.sharedpreferences.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.ConnectionNetworkInfo;
 
 
 public class TodoTextNoteViewModel extends ViewModel {
 
     private final MutableLiveData<Todo> savedTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> sendTodo = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> connectionState = new MutableLiveData<>();
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
     private final MutableLiveData<Boolean> invalidInputError = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> sendingError = new MutableLiveData<>();
     private Todo todo;
     private final AppIdentifier appIdentifier;
+    private final ConnectionNetworkInfo connectionNetworkInfo;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
-            //do nothing
+            sendingError.postValue(true);
+            sendTodo.postValue(false);
         }
 
         @Override
         public void onSuccess(Todo result) {
             savedTodo.postValue(result);
+            sendTodo.postValue(false);
         }
     };
 
-    public TodoTextNoteViewModel(AppIdentifier appIdentifier) {
+    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo) {
         this.appIdentifier = appIdentifier;
+        this.connectionNetworkInfo = connectionNetworkInfo;
+    }
+
+    public LiveData<Boolean> sendTodoEvent() {
+        return sendTodo;
+    }
+
+    public LiveData<Boolean> checkConnectionState() {
+        return connectionState;
     }
 
     public LiveData<Todo> getSavedTodo() {
@@ -43,6 +59,10 @@ public class TodoTextNoteViewModel extends ViewModel {
 
     public LiveData<Boolean> invalidInputEvent() {
         return invalidInputError;
+    }
+
+    public LiveData<Boolean> sendingErrorEvent() {
+        return sendingError;
     }
 
     public void setExtraTodo(Todo todo) {
@@ -66,12 +86,19 @@ public class TodoTextNoteViewModel extends ViewModel {
         if (textTodo.length() == 0) {
             invalidInputError.setValue(true);
         } else {
-            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
-            sentTodoThread.start();
+            if (connectionNetworkInfo.isConnected()) {
+                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
+                sentTodoThread.start();
+                sendTodo.setValue(true);
+            } else {
+                connectionState.setValue(true);
+            }
         }
     }
 
-    public void resetInvalidInputEvent() {
+    public void resetEvent() {
         invalidInputError.setValue(false);
+        connectionState.setValue(false);
+        sendingError.setValue(false);
     }
 }
