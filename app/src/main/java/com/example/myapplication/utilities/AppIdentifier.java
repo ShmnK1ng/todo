@@ -1,4 +1,4 @@
-package com.example.myapplication.sharedpreferences;
+package com.example.myapplication.utilities;
 
 public interface AppIdentifier {
     String getID();

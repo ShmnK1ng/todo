@@ -1,7 +1,7 @@
 package com.example.myapplication.network;
 
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
 import java.io.IOException;

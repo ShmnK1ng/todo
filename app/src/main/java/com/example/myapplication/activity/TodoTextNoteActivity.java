@@ -1,6 +1,5 @@
 package com.example.myapplication.activity;
 
-import static com.example.myapplication.activity.TodoListActivity.APP_PREFERENCES;
 import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
 import static com.example.myapplication.utilities.AlertDialogUtils.INVALID_INPUT_ERROR;
 import static com.example.myapplication.utilities.AlertDialogUtils.NETWORK_ERROR;
@@ -8,7 +7,6 @@ import static com.example.myapplication.utilities.AlertDialogUtils.SENDING_ERROR
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
@@ -23,8 +21,9 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
+import com.example.myapplication.data.TodoDbHelper;
+import com.example.myapplication.data.TodoDbHelperWrapper;
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
@@ -100,11 +99,11 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
+        TodoDbHelper dbHelper = new TodoDbHelper(this);
+        TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
-        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(sharedPreferencesWrapper, connectivityManagerWrapper)).get(TodoTextNoteViewModel.class);
+        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(dbHelperWrapper, connectivityManagerWrapper)).get(TodoTextNoteViewModel.class);
     }
 
     private void setObservers() {

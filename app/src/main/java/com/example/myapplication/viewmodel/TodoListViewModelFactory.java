@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.AppIdentifier;
 
 public class TodoListViewModelFactory implements ViewModelProvider.Factory {
     private final AppIdentifier appIdentifier;
