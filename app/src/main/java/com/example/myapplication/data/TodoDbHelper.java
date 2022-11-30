@@ -7,19 +7,27 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 public class TodoDbHelper extends SQLiteOpenHelper {
+    private static final String SQL_CREATE_ENTRIES =
+            "CREATE TABLE " + TodoListContract.TodoListID.TABLE_NAME + " (_id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                    + TodoListContract.TodoListID.COLUMN_ID + " TEXT NOT NULL)";
 
     private static final String DATABASE_NAME = "TodoList.db";
     private static final int DATABASE_VERSION = 1;
-    private static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + TodoListContract.TodoEntry.TABLE_NAME + " (" +
-                    TodoListContract.TodoEntry.TABLE_ID + " TEXT," +
-                    TodoListContract.TodoEntry.COLUMN_ID + " TEXT," +
-                    TodoListContract.TodoEntry.COLUMN_TEXT + " TEXT)";
-    private static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + TodoListContract.TodoEntry.TABLE_NAME;
+    private static volatile TodoDbHelper instance;
 
-    public TodoDbHelper(@Nullable Context context) {
+    private TodoDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+    }
+
+    public static TodoDbHelper getInstance(Context context) {
+        if (instance == null) {
+            synchronized (TodoDbHelper.class) {
+                if (instance == null) {
+                    instance = new TodoDbHelper(context);
+                }
+            }
+        }
+        return instance;
     }
 
     @Override
@@ -29,7 +37,6 @@ public class TodoDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL(SQL_DELETE_ENTRIES);
-        onCreate(db);
+        //do nothing
     }
 }

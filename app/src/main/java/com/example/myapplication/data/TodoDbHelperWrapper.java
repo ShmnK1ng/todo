@@ -6,6 +6,8 @@ import com.example.myapplication.utilities.AppIdentifier;
 
 public class TodoDbHelperWrapper implements AppIdentifier {
     private final TodoDbHelper dbHelper;
+    private static final int COLUMN_NOT_EXIST = -1;
+    private final static String GET_ID_QUERY = "SELECT " + TodoListContract.TodoListID.COLUMN_ID + " FROM " + TodoListContract.TodoListID.TABLE_NAME;
 
     public TodoDbHelperWrapper(TodoDbHelper dbHelper) {
         this.dbHelper = dbHelper;
@@ -13,25 +15,19 @@ public class TodoDbHelperWrapper implements AppIdentifier {
 
     @Override
     public String getID() {
-        String query = "SELECT " + TodoListContract.TodoEntry.TABLE_ID + " FROM " + TodoListContract.TodoEntry.TABLE_NAME;
-        Cursor cursor = dbHelper.getReadableDatabase().rawQuery(query, null);
-        if (cursor != null && cursor.moveToFirst()) {
-            int id = cursor.getColumnIndex(TodoListContract.TodoEntry.TABLE_ID);
-            if (id == -1) {
-                cursor.close();
+        try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(GET_ID_QUERY, null)) {
+            int id = cursor.getColumnIndex(TodoListContract.TodoListID.COLUMN_ID);
+            if (cursor.moveToFirst() && id != COLUMN_NOT_EXIST) {
+                return cursor.getString(id);
+            } else {
                 return null;
             }
-            String app_ID = cursor.getString(id);
-            cursor.close();
-            return app_ID;
-        } else {
-            return null;
         }
     }
 
     @Override
     public void setID(String id) {
-        String insertQuery = "INSERT INTO " + TodoListContract.TodoEntry.TABLE_NAME + " (" + TodoListContract.TodoEntry.TABLE_ID
+        String insertQuery = "INSERT INTO " + TodoListContract.TodoListID.TABLE_NAME + " (" + TodoListContract.TodoListID.COLUMN_ID
                 + ") VALUES( '" + id + "')";
         dbHelper.getWritableDatabase().execSQL(insertQuery);
     }

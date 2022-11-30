@@ -99,7 +99,7 @@ public class TodoTextNoteActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        TodoDbHelper dbHelper = new TodoDbHelper(this);
+        TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);

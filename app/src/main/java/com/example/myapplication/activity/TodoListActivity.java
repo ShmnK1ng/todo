@@ -26,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
-    static final String APP_PREFERENCES = "todo_settings";
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
@@ -80,7 +79,7 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        TodoDbHelper dbHelper = new TodoDbHelper(this);
+        TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
         this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(dbHelperWrapper)).get(TodoListViewModel.class);
     }
