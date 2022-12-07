@@ -20,12 +20,14 @@ public class TodoDbHelperWrapper implements AppIdentifier {
     @Override
     public String getID() {
         try (Cursor cursor = dbHelper.getReadableDatabase().rawQuery(GET_ID_QUERY, null)) {
-            int id = cursor.getColumnIndex(TodoListContract.TodoListID.COLUMN_ID);
-            if (cursor.moveToFirst() && id != COLUMN_NOT_EXIST) {
-                return cursor.getString(id);
+            int index = cursor.getColumnIndex(TodoListContract.TodoListID.COLUMN_ID);
+            String id;
+            if (cursor.moveToFirst() && index != COLUMN_NOT_EXIST) {
+                id = cursor.getString(index);
             } else {
-                return null;
+                id = NULL_VALUE;
             }
+            return id;
         }
     }
 

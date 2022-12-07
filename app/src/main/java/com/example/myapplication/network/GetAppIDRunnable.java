@@ -1,5 +1,7 @@
 package com.example.myapplication.network;
 
+import static com.example.myapplication.data.TodoDbHelper.NULL_VALUE;
+
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
@@ -15,7 +17,7 @@ public class GetAppIDRunnable implements Runnable {
     @Override
     public void run() {
         String appID = appIdentifier.getID();
-        if (appID == null) {
+        if (appID.equals(NULL_VALUE)) {
             callBack.onFail();
         } else {
             callBack.onSuccess(appID);

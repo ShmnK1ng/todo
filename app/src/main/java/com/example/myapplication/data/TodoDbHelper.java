@@ -14,6 +14,7 @@ public class TodoDbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_NAME = "TodoList.db";
     private static final int DATABASE_VERSION = 1;
     private static volatile TodoDbHelper instance;
+    private static final String SQL_ADD_PRIMARY_KEY = "INSERT INTO " + TodoListContract.TodoListID.TABLE_NAME + " (%s, %s) VALUES ('%s', '%s')";
 
     private TodoDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
