@@ -9,6 +9,7 @@ import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
+import com.example.myapplication.utilities.TodoDAO;
 
 
 public class TodoTextNoteViewModel extends ViewModel {
@@ -22,6 +23,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     private Todo todo;
     private final AppIdentifier appIdentifier;
     private final ConnectionNetworkInfo connectionNetworkInfo;
+    private final TodoDAO todoDAO;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
@@ -36,9 +38,10 @@ public class TodoTextNoteViewModel extends ViewModel {
         }
     };
 
-    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo) {
+    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDAO todoDAO) {
         this.appIdentifier = appIdentifier;
         this.connectionNetworkInfo = connectionNetworkInfo;
+        this.todoDAO = todoDAO;
     }
 
     public LiveData<Boolean> sendTodoEvent() {
@@ -87,7 +90,7 @@ public class TodoTextNoteViewModel extends ViewModel {
             invalidInputError.setValue(true);
         } else {
             if (connectionNetworkInfo.isConnected()) {
-                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier));
+                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
                 sentTodoThread.start();
                 sendTodo.setValue(true);
             } else {

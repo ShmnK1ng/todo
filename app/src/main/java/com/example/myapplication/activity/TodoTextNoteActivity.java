@@ -103,7 +103,8 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
-        this.viewModel = new ViewModelProvider(this, new TodoTextNoteViewModelFactory(dbHelperWrapper, connectivityManagerWrapper)).get(TodoTextNoteViewModel.class);
+        this.viewModel = new ViewModelProvider(this,
+                new TodoTextNoteViewModelFactory(dbHelperWrapper, connectivityManagerWrapper, dbHelperWrapper)).get(TodoTextNoteViewModel.class);
     }
 
     private void setObservers() {
