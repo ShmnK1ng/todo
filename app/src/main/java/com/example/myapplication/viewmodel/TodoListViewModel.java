@@ -8,7 +8,7 @@ import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.FirebaseInitRunnable;
 import com.example.myapplication.network.GetAppIDRunnable;
 import com.example.myapplication.network.GetTodoListRunnable;
-import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
 import java.util.ArrayList;

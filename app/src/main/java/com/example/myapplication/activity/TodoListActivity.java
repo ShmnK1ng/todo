@@ -1,8 +1,6 @@
 package com.example.myapplication.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,8 +15,9 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
+import com.example.myapplication.data.TodoDbHelper;
+import com.example.myapplication.data.TodoDbHelperWrapper;
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.sharedpreferences.SharedPreferencesWrapper;
 import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
@@ -27,7 +26,6 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class TodoListActivity extends AppCompatActivity {
 
     static final String EXTRA_TODO = "EXTRA_TODO";
-    static final String APP_PREFERENCES = "todo_settings";
     private static final int SPAN_COUNT = 2;
     private TodoAdapter todoAdapter;
     private TodoListViewModel viewModel;
@@ -81,9 +79,9 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        SharedPreferences serverID = getSharedPreferences(APP_PREFERENCES, Context.MODE_PRIVATE);
-        SharedPreferencesWrapper sharedPreferencesWrapper = new SharedPreferencesWrapper(serverID);
-        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(sharedPreferencesWrapper)).get(TodoListViewModel.class);
+        TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
+        TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
+        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(dbHelperWrapper)).get(TodoListViewModel.class);
     }
 
     private void setObservers() {

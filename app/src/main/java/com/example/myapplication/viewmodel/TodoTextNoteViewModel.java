@@ -6,7 +6,7 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.SendTodoRunnable;
-import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
 

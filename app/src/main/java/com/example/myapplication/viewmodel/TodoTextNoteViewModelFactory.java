@@ -4,7 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
-import com.example.myapplication.sharedpreferences.AppIdentifier;
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
 
 public class TodoTextNoteViewModelFactory implements ViewModelProvider.Factory {
