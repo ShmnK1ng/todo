@@ -23,6 +23,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
+    private final TodoDAO todoDAO;
     private final Callback<String> getIDCallback = new Callback<String>() {
         @Override
         public void onFail() {
@@ -50,6 +51,7 @@ public class TodoListViewModel extends ViewModel {
             todoList.postValue(new ArrayList<>(result));
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
+            todoDAO.saveTodoList(result);
         }
     };
 
@@ -67,10 +69,15 @@ public class TodoListViewModel extends ViewModel {
         }
     };
 
-    public TodoListViewModel(AppIdentifier appIdentifier) {
+    public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDAO todoDAO) {
         this.appIdentifier = appIdentifier;
-        getTodoList.setValue(true);
-        appInit();
+        this.todoDAO = todoDAO;
+        if (connectionNetworkInfo.isConnected()) {
+            getTodoList.setValue(true);
+            appInit();
+        } else {
+            todoList.postValue(todoDAO.getTodoList());
+        }
     }
 
     public LiveData<Boolean> refreshTodoListEvent() {
