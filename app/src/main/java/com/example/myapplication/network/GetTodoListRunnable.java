@@ -1,6 +1,7 @@
 package com.example.myapplication.network;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
 import java.io.IOException;
@@ -13,20 +14,20 @@ public class GetTodoListRunnable implements Runnable {
 
     private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/TodoList/";
     private static final String REQUEST_GET = "GET";
-    private static String APP_ID = "";
+    private final AppIdentifier appIdentifier;
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
     private final Callback<List<Todo>> callBack;
 
-    public GetTodoListRunnable(String id, Callback<List<Todo>> callBack) {
-        APP_ID = id;
+    public GetTodoListRunnable(AppIdentifier appIdentifier, Callback<List<Todo>> callBack) {
+        this.appIdentifier = appIdentifier;
         this.callBack = callBack;
     }
 
     @Override
     public void run() {
         try {
-            URL url = new URL(FIREBASE_URL + APP_ID + ".json");
+            URL url = new URL(FIREBASE_URL + appIdentifier.getID() + ".json");
             httpURLConnection = (HttpURLConnection) url.openConnection();
             httpURLConnection.setRequestMethod(REQUEST_GET);
             httpURLConnection.setDoInput(true);

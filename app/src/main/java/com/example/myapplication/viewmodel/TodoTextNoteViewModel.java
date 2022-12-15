@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.network.FirebaseInitRunnable;
 import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
@@ -24,6 +25,21 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final AppIdentifier appIdentifier;
     private final ConnectionNetworkInfo connectionNetworkInfo;
     private final TodoDAO todoDAO;
+    private final Callback<String> getIDCallback = new Callback<String>() {
+        @Override
+        public void onFail() {
+            sendingError.postValue(true);
+            sendTodo.postValue(false);
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            appIdentifier.setID(result);
+            Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
+            sentTodoThread.start();
+            sendTodo.postValue(true);
+        }
+    };
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
@@ -90,9 +106,15 @@ public class TodoTextNoteViewModel extends ViewModel {
             invalidInputError.setValue(true);
         } else {
             if (connectionNetworkInfo.isConnected()) {
-                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
-                sentTodoThread.start();
-                sendTodo.setValue(true);
+                if (appIdentifier.getID() == null) {
+                    Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback));
+                    onServerInitThread.start();
+                    sendTodo.setValue(true);
+                } else {
+                    Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
+                    sentTodoThread.start();
+                    sendTodo.setValue(true);
+                }
             } else {
                 connectionState.setValue(true);
             }

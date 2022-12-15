@@ -10,6 +10,8 @@ import com.example.myapplication.network.GetAppIDRunnable;
 import com.example.myapplication.network.GetTodoListRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.ConnectionNetworkInfo;
+import com.example.myapplication.utilities.TodoDAO;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +57,7 @@ public class TodoListViewModel extends ViewModel {
         }
     };
 
-    private final Callback<String> appInitCallback = new Callback<String>() {
+    private final Callback<AppIdentifier> appInitCallback = new Callback<AppIdentifier>() {
         @Override
         public void onFail() {
             Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback));
@@ -63,8 +65,8 @@ public class TodoListViewModel extends ViewModel {
         }
 
         @Override
-        public void onSuccess(String id) {
-            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListCallback));
+        public void onSuccess(AppIdentifier appIdentifier) {
+            Thread getTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier, getTodoListCallback));
             getTodoListThread.start();
         }
     };
@@ -141,7 +143,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
+        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier, getTodoListCallback));
         refreshTodoListThread.start();
         refreshTodoList.setValue(true);
     }
