@@ -9,7 +9,7 @@ import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 
 public class TodoTextNoteViewModel extends ViewModel {
@@ -23,7 +23,7 @@ public class TodoTextNoteViewModel extends ViewModel {
     private Todo todo;
     private final AppIdentifier appIdentifier;
     private final ConnectionNetworkInfo connectionNetworkInfo;
-    private final TodoDAO todoDAO;
+    private final TodoDao todoDAO;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
         public void onFail() {
@@ -38,7 +38,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         }
     };
 
-    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDAO todoDAO) {
+    public TodoTextNoteViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDAO) {
         this.appIdentifier = appIdentifier;
         this.connectionNetworkInfo = connectionNetworkInfo;
         this.todoDAO = todoDAO;

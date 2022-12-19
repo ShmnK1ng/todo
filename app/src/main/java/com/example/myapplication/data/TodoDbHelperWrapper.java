@@ -4,9 +4,9 @@ import android.database.Cursor;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AppIdentifier;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
-public class TodoDbHelperWrapper implements AppIdentifier, TodoDAO {
+public class TodoDbHelperWrapper implements AppIdentifier, TodoDao {
     private final TodoDbHelper dbHelper;
     private static final int PRIMARY_KEY_VALUE = 1;
     private static final int COLUMN_NOT_EXIST = -1;
