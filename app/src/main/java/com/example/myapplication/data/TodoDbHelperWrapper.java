@@ -1,15 +1,16 @@
 package com.example.myapplication.data;
 
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AppIdentifier;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TodoDbHelperWrapper implements AppIdentifier, TodoDAO {
+public class TodoDbHelperWrapper implements AppIdentifier, TodoDao {
     private final TodoDbHelper dbHelper;
     private static final int PRIMARY_KEY_VALUE = 1;
     private static final int COLUMN_NOT_EXIST = -1;
@@ -61,8 +62,15 @@ public class TodoDbHelperWrapper implements AppIdentifier, TodoDAO {
 
     @Override
     public void saveTodoList(List<Todo> todoList) {
-        for (Todo todo : todoList) {
-            dbHelper.getWritableDatabase().execSQL(String.format(SAVE_TODO_LIST_QUERY, todo.getUid(), todo.getTodoText()));
+        SQLiteDatabase TodoDb = dbHelper.getWritableDatabase();
+        TodoDb.beginTransaction();
+        try {
+            for (Todo todo : todoList) {
+                TodoDb.execSQL(String.format(SAVE_TODO_LIST_QUERY, todo.getUid(), todo.getTodoText()));
+            }
+            TodoDb.setTransactionSuccessful();
+        } finally {
+            TodoDb.endTransaction();
         }
     }
 

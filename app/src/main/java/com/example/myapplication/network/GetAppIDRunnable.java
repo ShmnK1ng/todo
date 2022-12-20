@@ -5,9 +5,9 @@ import com.example.myapplication.utilities.Callback;
 
 public class GetAppIDRunnable implements Runnable {
     private final AppIdentifier appIdentifier;
-    private final Callback<AppIdentifier> callBack;
+    private final Callback<String> callBack;
 
-    public GetAppIDRunnable(AppIdentifier appIdentifier, Callback<AppIdentifier> callBack) {
+    public GetAppIDRunnable(AppIdentifier appIdentifier, Callback<String> callBack) {
         this.appIdentifier = appIdentifier;
         this.callBack = callBack;
     }
@@ -18,7 +18,7 @@ public class GetAppIDRunnable implements Runnable {
         if (appID == null) {
             callBack.onFail();
         } else {
-            callBack.onSuccess(appIdentifier);
+            callBack.onSuccess(appID);
         }
     }
 }
