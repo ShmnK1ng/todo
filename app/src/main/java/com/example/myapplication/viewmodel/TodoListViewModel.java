@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.FirebaseInitRunnable;
 import com.example.myapplication.network.GetAppIDRunnable;
+import com.example.myapplication.network.GetTodoListDbRunnable;
 import com.example.myapplication.network.GetTodoListRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
@@ -26,6 +27,17 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
     private final TodoDAO todoDAO;
+    private final Callback<List<Todo>> getTodoListDbCallback = new Callback<List<Todo>>() {
+        @Override
+        public void onFail() {
+            getTodoListError.postValue(true);
+        }
+
+        @Override
+        public void onSuccess(List<Todo> result) {
+            todoList.postValue(new ArrayList<>(result));
+        }
+    };
     private final Callback<String> getIDCallback = new Callback<String>() {
         @Override
         public void onFail() {
@@ -35,7 +47,6 @@ public class TodoListViewModel extends ViewModel {
 
         @Override
         public void onSuccess(String result) {
-            appIdentifier.setID(result);
             getTodoList.postValue(false);
         }
     };
@@ -53,20 +64,19 @@ public class TodoListViewModel extends ViewModel {
             todoList.postValue(new ArrayList<>(result));
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
-            todoDAO.saveTodoList(result);
         }
     };
 
-    private final Callback<AppIdentifier> appInitCallback = new Callback<AppIdentifier>() {
+    private final Callback<String> appInitCallback = new Callback<String>() {
         @Override
         public void onFail() {
-            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback));
+            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback, appIdentifier));
             onServerInitThread.start();
         }
 
         @Override
-        public void onSuccess(AppIdentifier appIdentifier) {
-            Thread getTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier, getTodoListCallback));
+        public void onSuccess(String id) {
+            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListCallback, todoDAO));
             getTodoListThread.start();
         }
     };
@@ -78,7 +88,8 @@ public class TodoListViewModel extends ViewModel {
             getTodoList.setValue(true);
             appInit();
         } else {
-            todoList.postValue(todoDAO.getTodoList());
+            Thread getTodoListDb = new Thread(new GetTodoListDbRunnable(todoDAO, getTodoListDbCallback));
+            getTodoListDb.start();
         }
     }
 
@@ -143,7 +154,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier, getTodoListCallback));
+        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback, todoDAO));
         refreshTodoListThread.start();
         refreshTodoList.setValue(true);
     }
