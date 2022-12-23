@@ -3,6 +3,7 @@ package com.example.myapplication.network;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,11 +22,13 @@ public class SendTodoRunnable implements Runnable {
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
     private HttpURLConnection httpURLConnection;
     private final Callback<Todo> callback;
+    private final TodoDao todoDAO;
 
-    public SendTodoRunnable(Todo todo, Callback<Todo> callback, AppIdentifier appIdentifier) {
+    public SendTodoRunnable(Todo todo, Callback<Todo> callback, AppIdentifier appIdentifier, TodoDao todoDAO) {
         this.todo = todo;
         this.appIdentifier = appIdentifier;
         this.callback = callback;
+        this.todoDAO = todoDAO;
     }
 
     @Override
@@ -52,6 +55,9 @@ public class SendTodoRunnable implements Runnable {
                     InputStream inputStream = httpURLConnection.getInputStream();
                     String todoID = todoJsonReader.readJsonFromServer(inputStream);
                     todo.setUid(todoID);
+                    todoDAO.saveTodo(todo);
+                } else {
+                    todoDAO.editTodo(todo);
                 }
                 callback.onSuccess(todo);
             } else {
