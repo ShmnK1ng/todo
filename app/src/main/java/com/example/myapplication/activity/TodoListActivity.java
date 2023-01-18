@@ -1,6 +1,8 @@
 package com.example.myapplication.activity;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -19,6 +21,7 @@ import com.example.myapplication.data.TodoDbHelper;
 import com.example.myapplication.data.TodoDbHelperWrapper;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AlertDialogUtils;
+import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -81,7 +84,9 @@ public class TodoListActivity extends AppCompatActivity {
     private void viewModelInit() {
         TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
-        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(dbHelperWrapper)).get(TodoListViewModel.class);
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
+        this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(dbHelperWrapper, connectivityManagerWrapper, dbHelperWrapper)).get(TodoListViewModel.class);
     }
 
     private void setObservers() {

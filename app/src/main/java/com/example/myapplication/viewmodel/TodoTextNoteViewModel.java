@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.network.FirebaseInitRunnable;
+import com.example.myapplication.network.GetAppIDRunnable;
 import com.example.myapplication.network.SendTodoRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
@@ -35,6 +37,30 @@ public class TodoTextNoteViewModel extends ViewModel {
         public void onSuccess(Todo result) {
             savedTodo.postValue(result);
             sendTodo.postValue(false);
+        }
+    };
+    private final Callback<String> getIDCallback = new Callback<String>() {
+        @Override
+        public void onFail() {
+            sendingError.postValue(true);
+            sendTodo.postValue(false);
+        }
+
+        @Override
+        public void onSuccess(String result) {
+            startSendTodoThread();
+        }
+    };
+    private final Callback<String> appInitCallback = new Callback<String>() {
+        @Override
+        public void onFail() {
+            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback, appIdentifier));
+            onServerInitThread.start();
+        }
+
+        @Override
+        public void onSuccess(String id) {
+            startSendTodoThread();
         }
     };
 
@@ -90,8 +116,8 @@ public class TodoTextNoteViewModel extends ViewModel {
             invalidInputError.setValue(true);
         } else {
             if (connectionNetworkInfo.isConnected()) {
-                Thread sentTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
-                sentTodoThread.start();
+                Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitCallback));
+                appInitThread.start();
                 sendTodo.setValue(true);
             } else {
                 connectionState.setValue(true);
@@ -103,5 +129,10 @@ public class TodoTextNoteViewModel extends ViewModel {
         invalidInputError.setValue(false);
         connectionState.setValue(false);
         sendingError.setValue(false);
+    }
+
+    public void startSendTodoThread() {
+        Thread sendTodoThread = new Thread(new SendTodoRunnable(todo, sendTodoCallback, appIdentifier, todoDAO));
+        sendTodoThread.start();
     }
 }

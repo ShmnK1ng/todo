@@ -6,8 +6,14 @@ import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.TodoApi;
+import com.example.myapplication.network.FirebaseInitRunnable;
+import com.example.myapplication.network.GetAppIDRunnable;
+import com.example.myapplication.network.GetTodoListDbRunnable;
+import com.example.myapplication.network.GetTodoListRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.ConnectionNetworkInfo;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,8 +45,14 @@ public class TodoListViewModel extends ViewModel {
 
     public TodoListViewModel(AppIdentifier appIdentifier) {
         this.appIdentifier = appIdentifier;
-        getTodoList.setValue(true);
-        appInit();
+        this.todoDAO = todoDAO;
+        if (connectionNetworkInfo.isConnected()) {
+            getTodoList.setValue(true);
+            appInit();
+        } else {
+            Thread getTodoListDb = new Thread(new GetTodoListDbRunnable(todoDAO, getTodoListDbCallback));
+            getTodoListDb.start();
+        }
     }
 
     public LiveData<Boolean> refreshTodoListEvent() {

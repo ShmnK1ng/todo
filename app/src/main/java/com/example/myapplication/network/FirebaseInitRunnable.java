@@ -1,5 +1,6 @@
 package com.example.myapplication.network;
 
+import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
 import java.io.IOException;
@@ -16,9 +17,11 @@ public class FirebaseInitRunnable implements Runnable {
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
     private final Callback<String> callBack;
+    private AppIdentifier appIdentifier;
 
-    public FirebaseInitRunnable(Callback<String> callBack) {
+    public FirebaseInitRunnable(Callback<String> callBack, AppIdentifier appIdentifier) {
         this.callBack = callBack;
+        this.appIdentifier = appIdentifier;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class FirebaseInitRunnable implements Runnable {
                 InputStream inputStream = httpURLConnection.getInputStream();
                 String APP_ID = todoJsonReader.readJsonFromServer(inputStream);
                 callBack.onSuccess(APP_ID);
+                appIdentifier.setID(APP_ID);
             } else {
                 callBack.onFail();
             }
