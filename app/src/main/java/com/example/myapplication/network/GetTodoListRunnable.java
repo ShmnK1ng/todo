@@ -2,7 +2,7 @@ package com.example.myapplication.network;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.Callback;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,9 +18,9 @@ public class GetTodoListRunnable implements Runnable {
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
     private final Callback<List<Todo>> callBack;
-    private TodoDAO todoDAO;
+    private final TodoDao todoDAO;
 
-    public GetTodoListRunnable(String id, Callback<List<Todo>> callBack, TodoDAO todoDAO) {
+    public GetTodoListRunnable(String id, Callback<List<Todo>> callBack, TodoDao todoDAO) {
         APP_ID = id;
         this.callBack = callBack;
         this.todoDAO = todoDAO;

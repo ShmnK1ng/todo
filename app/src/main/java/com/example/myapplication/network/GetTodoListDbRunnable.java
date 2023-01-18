@@ -2,16 +2,16 @@ package com.example.myapplication.network;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.Callback;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.util.List;
 
 public class GetTodoListDbRunnable implements Runnable {
 
-    private final TodoDAO todoDAO;
+    private final TodoDao todoDAO;
     private final Callback<List<Todo>> getTodoListDbCallback;
 
-    public GetTodoListDbRunnable(TodoDAO todoDAO, Callback<List<Todo>> getTodoListDbCallback) {
+    public GetTodoListDbRunnable(TodoDao todoDAO, Callback<List<Todo>> getTodoListDbCallback) {
         this.todoDAO = todoDAO;
         this.getTodoListDbCallback = getTodoListDbCallback;
     }

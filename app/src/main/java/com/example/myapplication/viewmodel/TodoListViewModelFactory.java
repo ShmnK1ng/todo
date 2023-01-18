@@ -6,14 +6,14 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 public class TodoListViewModelFactory implements ViewModelProvider.Factory {
     private final AppIdentifier appIdentifier;
     private final ConnectionNetworkInfo connectionNetworkInfo;
-    private final TodoDAO todoDAO;
+    private final TodoDao todoDAO;
 
-    public TodoListViewModelFactory(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDAO todoDAO) {
+    public TodoListViewModelFactory(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDAO) {
         this.appIdentifier = appIdentifier;
         this.connectionNetworkInfo = connectionNetworkInfo;
         this.todoDAO = todoDAO;

@@ -12,7 +12,7 @@ import com.example.myapplication.network.GetTodoListRunnable;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
-import com.example.myapplication.utilities.TodoDAO;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +26,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
-    private final TodoDAO todoDAO;
+    private final TodoDao todoDAO;
     private final Callback<List<Todo>> getTodoListDbCallback = new Callback<List<Todo>>() {
         @Override
         public void onFail() {
@@ -81,7 +81,7 @@ public class TodoListViewModel extends ViewModel {
         }
     };
 
-    public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDAO todoDAO) {
+    public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDAO) {
         this.appIdentifier = appIdentifier;
         this.todoDAO = todoDAO;
         if (connectionNetworkInfo.isConnected()) {
