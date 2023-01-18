@@ -5,9 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.network.FirebaseInitRunnable;
-import com.example.myapplication.network.GetAppIDRunnable;
-import com.example.myapplication.network.GetTodoListRunnable;
+import com.example.myapplication.network.TodoApi;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 
@@ -23,20 +21,6 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
-    private final Callback<String> getIDCallback = new Callback<String>() {
-        @Override
-        public void onFail() {
-            getTodoListError.postValue(true);
-            getTodoList.postValue(false);
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            appIdentifier.setID(result);
-            getTodoList.postValue(false);
-        }
-    };
-
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
         public void onFail() {
@@ -50,20 +34,6 @@ public class TodoListViewModel extends ViewModel {
             todoList.postValue(new ArrayList<>(result));
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
-        }
-    };
-
-    private final Callback<String> appInitCallback = new Callback<String>() {
-        @Override
-        public void onFail() {
-            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback));
-            onServerInitThread.start();
-        }
-
-        @Override
-        public void onSuccess(String id) {
-            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListCallback));
-            getTodoListThread.start();
         }
     };
 
@@ -125,7 +95,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void appInit() {
-        Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitCallback));
+        Thread appInitThread = new Thread(() -> new TodoApi(getTodoListCallback, appIdentifier).getAppID());
         appInitThread.start();
     }
 
@@ -134,7 +104,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback));
+        Thread refreshTodoListThread = new Thread(() -> new TodoApi(getTodoListCallback, appIdentifier).getTodoList(appIdentifier.getID()));
         refreshTodoListThread.start();
         refreshTodoList.setValue(true);
     }

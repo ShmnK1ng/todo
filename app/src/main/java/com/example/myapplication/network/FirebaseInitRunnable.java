@@ -12,7 +12,6 @@ public class FirebaseInitRunnable implements Runnable {
 
     private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/TodoList/.json";
     private static final String REQUEST_POST = "POST";
-    public static String APP_ID;
     private final TodoJsonWriter todoJsonWriter = new TodoJsonWriter();
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
@@ -35,7 +34,7 @@ public class FirebaseInitRunnable implements Runnable {
             todoJsonWriter.writeInitJson(outputStream);
             if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                 InputStream inputStream = httpURLConnection.getInputStream();
-                APP_ID = todoJsonReader.readJsonFromServer(inputStream);
+                String APP_ID = todoJsonReader.readJsonFromServer(inputStream);
                 callBack.onSuccess(APP_ID);
             } else {
                 callBack.onFail();
