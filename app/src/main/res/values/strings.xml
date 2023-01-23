@@ -13,5 +13,7 @@
     <string name="activity_todo_text_sending_message_error_dialog_title">Sending message error</string>
     <string name="activity_todo_text_sending_message_error_dialog_message">Failed to save message to server</string>
     <string name="activity_todo_list_get_todo_list_error_dialog_message">Failed to get notes from server</string>
+    <string name="activity_todo_list_server_init_error_dialog_title">Server init error</string>
+    <string name="activity_todo_list_firebase_init_error_dialog_message">Server not response</string>
 
 </resources>
