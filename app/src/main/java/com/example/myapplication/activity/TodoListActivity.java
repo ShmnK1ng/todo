@@ -77,10 +77,6 @@ public class TodoListActivity extends AppCompatActivity {
         updateNote.launch(startEditTodo);
     }
 
-    private void getTodolistError() {
-        AlertDialogUtils.showAlertDialog(this, AlertDialogUtils.GET_TODO_LIST_ERROR, dialog -> viewModel.resetGetTodoListErrorEvent());
-    }
-
     private void viewModelInit() {
         TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
@@ -111,9 +107,9 @@ public class TodoListActivity extends AppCompatActivity {
                 addNoteButton.setVisibility(View.VISIBLE);
             }
         });
-        viewModel.getTodoListErrorEvent().observe(this, isGetTodoListError -> {
-            if (isGetTodoListError) {
-                getTodolistError();
+        viewModel.getTodoListErrorEvent().observe(this, todoListErrorMessage -> {
+            if (todoListErrorMessage != null) {
+                AlertDialogUtils.showAlertDialog(this, todoListErrorMessage, dialog -> viewModel.resetGetTodoListErrorEvent());
             }
         });
         viewModel.refreshTodoListEvent().observe(this, refreshStarted -> swipeRefreshLayout.setRefreshing(refreshStarted));

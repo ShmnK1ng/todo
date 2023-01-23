@@ -20,14 +20,15 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
     private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
+    private final MutableLiveData<String> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final AppIdentifier appIdentifier;
     private final TodoDao todoDao;
+    private final ConnectionNetworkInfo connectionNetworkInfo;
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
-        public void onFail() {
-            getTodoListError.postValue(true);
+        public void onFail(String message) {
+            getTodoListError.postValue(message);
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
         }
@@ -39,22 +40,11 @@ public class TodoListViewModel extends ViewModel {
             refreshTodoList.postValue(false);
         }
     };
-
     public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDao) {
-        this.appIdentifier = appIdentifier;
         this.todoDao = todoDao;
-        if (connectionNetworkInfo.isConnected()) {
-            getTodoList.setValue(true);
-            appInit();
-        } else {
-            Thread getTodoListDb = new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    new TodoApi(getTodoListCallback, appIdentifier).getTodoList(appIdentifier.getID());
-                }
-            });
-            getTodoListDb.start();
-        }
+        this.appIdentifier = appIdentifier;
+        this.connectionNetworkInfo = connectionNetworkInfo;
+        getTodoListFromServer();
     }
 
     public LiveData<Boolean> refreshTodoListEvent() {
@@ -77,7 +67,7 @@ public class TodoListViewModel extends ViewModel {
         return goToEditTodo;
     }
 
-    public LiveData<Boolean> getTodoListErrorEvent() {
+    public LiveData<String> getTodoListErrorEvent() {
         return getTodoListError;
     }
 
@@ -108,17 +98,18 @@ public class TodoListViewModel extends ViewModel {
         goToEditTodo.setValue(null);
     }
 
-    public void appInit() {
-        Thread appInitThread = new Thread(() -> new TodoApi(getTodoListCallback, appIdentifier).getAppID());
-        appInitThread.start();
+    public void getTodoListFromServer() {
+        getTodoList.setValue(true);
+        Thread etTodoListThread = new Thread(() -> new TodoApi(appIdentifier, todoDao).getTodoList(getTodoListCallback, connectionNetworkInfo));
+        etTodoListThread.start();
     }
 
     public void resetGetTodoListErrorEvent() {
-        getTodoListError.setValue(false);
+        getTodoListError.setValue(null);
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(() -> new TodoApi(getTodoListCallback, appIdentifier).getTodoList(appIdentifier.getID()));
+        Thread refreshTodoListThread = new Thread(() -> new TodoApi(appIdentifier, todoDao).getTodoListFromServer(getTodoListCallback, appIdentifier.getID()));
         refreshTodoListThread.start();
         refreshTodoList.setValue(true);
     }
