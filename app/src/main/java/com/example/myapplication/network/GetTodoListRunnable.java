@@ -2,6 +2,7 @@ package com.example.myapplication.network;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.Callback;
+import com.example.myapplication.utilities.TodoDao;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -17,10 +18,12 @@ public class GetTodoListRunnable implements Runnable {
     private final TodoJsonReader todoJsonReader = new TodoJsonReader();
     private HttpURLConnection httpURLConnection;
     private final Callback<List<Todo>> callBack;
+    private final TodoDao todoDAO;
 
-    public GetTodoListRunnable(String id, Callback<List<Todo>> callBack) {
+    public GetTodoListRunnable(String id, Callback<List<Todo>> callBack, TodoDao todoDAO) {
         APP_ID = id;
         this.callBack = callBack;
+        this.todoDAO = todoDAO;
     }
 
     @Override
@@ -36,6 +39,7 @@ public class GetTodoListRunnable implements Runnable {
                 List<Todo> todoList = todoJsonReader.readJsonStream(inputStream);
                 inputStream.close();
                 callBack.onSuccess(todoList);
+                todoDAO.saveTodoList(todoList);
             } else {
                 callBack.onFail();
             }
