@@ -20,9 +20,13 @@ import androidx.lifecycle.ViewModelProvider;
 import com.example.myapplication.R;
 import com.example.myapplication.data.TodoDbHelper;
 import com.example.myapplication.data.TodoDbHelperWrapper;
+import com.example.myapplication.data.TodoRepository;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.ConnectivityManagerWrapper;
+import com.example.myapplication.utilities.Repository;
+import com.example.myapplication.utilities.TodoApi;
+import com.example.myapplication.utilities.TodoHttpConnectionUtils;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
 
@@ -96,8 +100,10 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
+        TodoApi todoApi = new TodoHttpConnectionUtils();
+        Repository repository = new TodoRepository(dbHelperWrapper, dbHelperWrapper, todoApi, connectivityManagerWrapper);
         this.viewModel = new ViewModelProvider(this,
-                new TodoTextNoteViewModelFactory(dbHelperWrapper, connectivityManagerWrapper, dbHelperWrapper)).get(TodoTextNoteViewModel.class);
+                new TodoTextNoteViewModelFactory(repository)).get(TodoTextNoteViewModel.class);
     }
 
     private void setObservers() {

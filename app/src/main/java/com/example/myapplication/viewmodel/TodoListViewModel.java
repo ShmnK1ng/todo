@@ -5,11 +5,8 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.network.TodoApi;
-import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
-import com.example.myapplication.utilities.ConnectionNetworkInfo;
-import com.example.myapplication.utilities.TodoDao;
+import com.example.myapplication.utilities.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,9 +19,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
     private final MutableLiveData<String> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
-    private final AppIdentifier appIdentifier;
-    private final TodoDao todoDao;
-    private final ConnectionNetworkInfo connectionNetworkInfo;
+    private final Repository repository;
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
         public void onFail(String message) {
@@ -35,16 +30,16 @@ public class TodoListViewModel extends ViewModel {
 
         @Override
         public void onSuccess(List<Todo> result) {
-            todoList.postValue(new ArrayList<>(result));
+            if (result != null) {
+                todoList.postValue(new ArrayList<>(result));
+            }
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
         }
     };
 
-    public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDao) {
-        this.todoDao = todoDao;
-        this.appIdentifier = appIdentifier;
-        this.connectionNetworkInfo = connectionNetworkInfo;
+    public TodoListViewModel(Repository repository) {
+        this.repository = repository;
         getTodoListFromServer();
     }
 
@@ -101,8 +96,7 @@ public class TodoListViewModel extends ViewModel {
 
     public void getTodoListFromServer() {
         getTodoList.setValue(true);
-        Thread etTodoListThread = new Thread(() -> new TodoApi(appIdentifier, todoDao).getTodoList(getTodoListCallback, connectionNetworkInfo));
-        etTodoListThread.start();
+        repository.getTodoList(getTodoListCallback);
     }
 
     public void resetGetTodoListErrorEvent() {
@@ -110,8 +104,7 @@ public class TodoListViewModel extends ViewModel {
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(() -> new TodoApi(appIdentifier, todoDao).getTodoListFromServer(getTodoListCallback, appIdentifier.getID()));
-        refreshTodoListThread.start();
+        repository.getTodoList(getTodoListCallback);
         refreshTodoList.setValue(true);
     }
 }
