@@ -7,7 +7,7 @@ import java.util.List;
 public interface TodoApi {
     List<Todo> getTodoList(String appID);
 
-    String saveTodo(String callback, Todo todo);
+    AlertDialogUtils.Events saveTodo(String callback, Todo todo);
 
     String serverInit();
 }

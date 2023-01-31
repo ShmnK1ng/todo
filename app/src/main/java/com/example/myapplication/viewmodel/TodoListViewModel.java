@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.Repository;
 
@@ -17,12 +18,12 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
     private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
-    private final MutableLiveData<String> getTodoListError = new MutableLiveData<>();
+    private final MutableLiveData<AlertDialogUtils.Events> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final Repository repository;
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
-        public void onFail(String message) {
+        public void onFail(AlertDialogUtils.Events message) {
             getTodoListError.postValue(message);
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
@@ -63,7 +64,7 @@ public class TodoListViewModel extends ViewModel {
         return goToEditTodo;
     }
 
-    public LiveData<String> getTodoListErrorEvent() {
+    public LiveData<AlertDialogUtils.Events> getTodoListErrorEvent() {
         return getTodoListError;
     }
 

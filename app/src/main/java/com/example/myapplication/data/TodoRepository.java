@@ -1,16 +1,14 @@
 package com.example.myapplication.data;
 
-import static com.example.myapplication.utilities.AlertDialogUtils.GET_TODO_LIST_ERROR;
-import static com.example.myapplication.utilities.AlertDialogUtils.NETWORK_ERROR;
-import static com.example.myapplication.utilities.AlertDialogUtils.SENDING_ERROR;
-import static com.example.myapplication.utilities.AlertDialogUtils.SERVER_INIT_ERROR;
-import static com.example.myapplication.utilities.TodoHttpConnectionUtils.TODO_ADDED;
-import static com.example.myapplication.utilities.TodoHttpConnectionUtils.TODO_EDITED;
+import android.content.Context;
+import android.net.ConnectivityManager;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.AppIdentifier;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.ConnectionNetworkInfo;
+import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.utilities.Repository;
 import com.example.myapplication.utilities.TodoApi;
 import com.example.myapplication.utilities.TodoDao;
@@ -25,14 +23,28 @@ public class TodoRepository implements Repository {
     private final TodoApi todoApi;
     private final ConnectionNetworkInfo connectionNetworkInfo;
     private String appID;
+    private static volatile TodoRepository instance;
 
-    public TodoRepository(AppIdentifier appIdentifier, TodoDao todoDao, TodoApi todoApi, ConnectionNetworkInfo connectionNetworkInfo) {
-        this.appIdentifier = appIdentifier;
-        this.todoDao = todoDao;
-        this.todoApi = todoApi;
-        this.connectionNetworkInfo = connectionNetworkInfo;
+    public TodoRepository(Context context) {
+        TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(TodoDbHelper.getInstance(context));
+        this.appIdentifier = dbHelperWrapper;
+        this.todoDao = dbHelperWrapper;
+        this.todoApi = new TodoHttpConnectionUtils();
+        this.connectionNetworkInfo = new ConnectivityManagerWrapper((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
     }
 
+    public static TodoRepository getInstance(Context context) {
+        if (instance == null) {
+            synchronized (TodoRepository.class) {
+                if (instance == null) {
+                    instance = new TodoRepository(context);
+                }
+            }
+        }
+        return instance;
+    }
+
+    @Override
     public void getTodoList(Callback<List<Todo>> callback) {
         new Thread(() -> {
             if (connectionNetworkInfo.isConnected()) {
@@ -48,35 +60,37 @@ public class TodoRepository implements Repository {
         }).start();
     }
 
-    public void getTodoListFromServer(Callback<List<Todo>> callback, String appID) {
+    private void getTodoListFromServer(Callback<List<Todo>> callback, String appID) {
         List<Todo> todoList = todoApi.getTodoList(appID);
         if (todoList != null) {
             todoDao.saveTodoList(todoList);
             callback.onSuccess(todoList);
         } else {
-            callback.onFail(GET_TODO_LIST_ERROR);
+            callback.onFail(AlertDialogUtils.Events.GET_TODO_LIST_ERROR);
         }
     }
 
-    public <T> void serverInit(Callback<T> callback) {
+    private <T> void serverInit(Callback<T> callback) {
         appID = todoApi.serverInit();
         if (appID != null) {
             appIdentifier.setID(appID);
             callback.onSuccess(null);
         } else {
-            callback.onFail(SERVER_INIT_ERROR);
+            callback.onFail(AlertDialogUtils.Events.SERVER_INIT_ERROR);
         }
     }
 
-    public void getTodoListFromBD(Callback<List<Todo>> callback) {
+    private void getTodoListFromBD(Callback<List<Todo>> callback) {
         try {
             List<Todo> todoList = todoDao.getTodoList();
             callback.onSuccess(todoList);
+            callback.onFail(AlertDialogUtils.Events.NETWORK_ERROR);
         } catch (Exception e) {
-            callback.onFail(GET_TODO_LIST_ERROR);
+            callback.onFail(AlertDialogUtils.Events.GET_TODO_LIST_ERROR);
         }
     }
 
+    @Override
     public void saveTodo(Callback<Todo> callback, Todo todo) {
         new Thread(() -> {
             if (connectionNetworkInfo.isConnected()) {
@@ -87,22 +101,23 @@ public class TodoRepository implements Repository {
                     startSavingTodo(callback, todo, appID);
                 }
             } else {
-                callback.onFail(NETWORK_ERROR);
+                callback.onFail(AlertDialogUtils.Events.NETWORK_ERROR);
             }
         }).start();
     }
 
-    public void startSavingTodo(Callback<Todo> callback, Todo todo, String appID) {
-        String savingStatus = new TodoHttpConnectionUtils().saveTodo(appID, todo);
-        if (savingStatus.equals(TODO_EDITED)) {
+    private void startSavingTodo(Callback<Todo> callback, Todo todo, String appID) {
+
+        AlertDialogUtils.Events savingStatus = new TodoHttpConnectionUtils().saveTodo(appID, todo);
+        if (savingStatus == AlertDialogUtils.Events.TODO_EDITED) {
             todoDao.editTodo(todo);
             callback.onSuccess(todo);
         } else {
-            if (savingStatus.equals(TODO_ADDED)) {
+            if (savingStatus == AlertDialogUtils.Events.TODO_ADDED) {
                 todoDao.saveTodo(todo);
                 callback.onSuccess(todo);
             } else {
-                callback.onFail(SENDING_ERROR);
+                callback.onFail(AlertDialogUtils.Events.SENDING_ERROR);
             }
         }
     }

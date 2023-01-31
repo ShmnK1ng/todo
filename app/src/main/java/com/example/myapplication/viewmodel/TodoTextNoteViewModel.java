@@ -1,12 +1,12 @@
 package com.example.myapplication.viewmodel;
 
-import static com.example.myapplication.utilities.AlertDialogUtils.INVALID_INPUT_ERROR;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.Callback;
 import com.example.myapplication.utilities.Repository;
 
@@ -16,12 +16,12 @@ public class TodoTextNoteViewModel extends ViewModel {
     private final MutableLiveData<Todo> savedTodo = new MutableLiveData<>();
     private final MutableLiveData<Boolean> sendTodo = new MutableLiveData<>();
     private final MutableLiveData<String> editTodoText = new MutableLiveData<>();
-    private final MutableLiveData<String> getTodoError = new MutableLiveData<>();
+    private final MutableLiveData<AlertDialogUtils.Events> getTodoError = new MutableLiveData<>();
     private Todo todo;
     private final Repository repository;
     private final Callback<Todo> sendTodoCallback = new Callback<Todo>() {
         @Override
-        public void onFail(String message) {
+        public void onFail(AlertDialogUtils.Events message) {
             getTodoError.postValue(message);
             sendTodo.postValue(false);
         }
@@ -49,7 +49,7 @@ public class TodoTextNoteViewModel extends ViewModel {
         return editTodoText;
     }
 
-    public LiveData<String> sendingErrorEvent() {
+    public LiveData<AlertDialogUtils.Events> sendingErrorEvent() {
         return getTodoError;
     }
 
@@ -72,7 +72,7 @@ public class TodoTextNoteViewModel extends ViewModel {
             todo.setTodoText(textTodo);
         }
         if (textTodo.length() == 0) {
-            getTodoError.setValue(INVALID_INPUT_ERROR);
+            getTodoError.setValue(AlertDialogUtils.Events.INVALID_INPUT_ERROR);
         } else {
             repository.saveTodo(sendTodoCallback, todo);
             sendTodo.setValue(true);

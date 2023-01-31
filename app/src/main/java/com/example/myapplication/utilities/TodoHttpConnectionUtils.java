@@ -1,6 +1,5 @@
 package com.example.myapplication.utilities;
 
-import static com.example.myapplication.utilities.AlertDialogUtils.SENDING_ERROR;
 
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.TodoJsonReader;
@@ -19,8 +18,6 @@ public class TodoHttpConnectionUtils implements TodoApi {
     public static final String POST_TODO = "post_todo";
     public static final String SERVER_INIT = "server_init";
     public static final String GET_TODO_LIST = "get_todo_list";
-    public static final String TODO_ADDED = "todo_added";
-    public static final String TODO_EDITED = "todo_edited";
     private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/TodoList/";
     private static final String REQUEST_POST = "POST";
     private static final String REQUEST_GET = "GET";
@@ -34,7 +31,7 @@ public class TodoHttpConnectionUtils implements TodoApi {
     private boolean inputRequest;
     private boolean outputRequest;
 
-    public Boolean connectToServer(String requestConnectionMethod, String appID, Todo todo) {
+    private Boolean connectToServer(String requestConnectionMethod, String appID, Todo todo) {
         boolean isConnected = true;
         try {
             switch (requestConnectionMethod) {
@@ -73,6 +70,7 @@ public class TodoHttpConnectionUtils implements TodoApi {
         return isConnected;
     }
 
+    @Override
     public String serverInit() {
         if (connectToServer(SERVER_INIT, null, null)) {
             try {
@@ -93,6 +91,7 @@ public class TodoHttpConnectionUtils implements TodoApi {
         return appID;
     }
 
+    @Override
     public List<Todo> getTodoList(String appID) {
         List<Todo> todoList = null;
         if (connectToServer(GET_TODO_LIST, appID, null)) {
@@ -111,9 +110,10 @@ public class TodoHttpConnectionUtils implements TodoApi {
         return todoList;
     }
 
-    public String saveTodo(String appID, Todo todo) {
+    @Override
+    public AlertDialogUtils.Events saveTodo(String appID, Todo todo) {
         String requestMethod;
-        String savingStatus;
+        AlertDialogUtils.Events savingStatus;
         if (todo.getUid() == null) {
             requestMethod = POST_TODO;
         } else {
@@ -128,20 +128,20 @@ public class TodoHttpConnectionUtils implements TodoApi {
                         InputStream inputStream = httpURLConnection.getInputStream();
                         String todoUID = todoJsonReader.readJsonFromServer(inputStream);
                         todo.setUid(todoUID);
-                        savingStatus = TODO_ADDED;
+                        savingStatus = AlertDialogUtils.Events.TODO_ADDED;
                     } else {
-                        savingStatus = SENDING_ERROR;
+                        savingStatus = AlertDialogUtils.Events.SENDING_ERROR;
                     }
                 } else {
-                    savingStatus = TODO_EDITED;
+                    savingStatus = AlertDialogUtils.Events.TODO_EDITED;
                 }
             } catch (IOException e) {
-                savingStatus = SENDING_ERROR;
+                savingStatus = AlertDialogUtils.Events.SENDING_ERROR;
             } finally {
                 httpURLConnection.disconnect();
             }
         } else {
-            savingStatus = SENDING_ERROR;
+            savingStatus = AlertDialogUtils.Events.SENDING_ERROR;
         }
         return savingStatus;
     }

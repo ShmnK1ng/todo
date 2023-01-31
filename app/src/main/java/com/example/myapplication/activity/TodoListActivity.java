@@ -1,8 +1,6 @@
 package com.example.myapplication.activity;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,15 +15,10 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.TodoAdapter;
-import com.example.myapplication.data.TodoDbHelper;
-import com.example.myapplication.data.TodoDbHelperWrapper;
 import com.example.myapplication.data.TodoRepository;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AlertDialogUtils;
-import com.example.myapplication.utilities.ConnectivityManagerWrapper;
 import com.example.myapplication.utilities.Repository;
-import com.example.myapplication.utilities.TodoApi;
-import com.example.myapplication.utilities.TodoHttpConnectionUtils;
 import com.example.myapplication.viewmodel.TodoListViewModel;
 import com.example.myapplication.viewmodel.TodoListViewModelFactory;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -82,12 +75,7 @@ public class TodoListActivity extends AppCompatActivity {
     }
 
     private void viewModelInit() {
-        TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
-        TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
-        TodoApi todoApi = new TodoHttpConnectionUtils();
-        Repository repository = new TodoRepository(dbHelperWrapper, dbHelperWrapper, todoApi, connectivityManagerWrapper);
+        Repository repository = TodoRepository.getInstance(getApplicationContext());
         this.viewModel = new ViewModelProvider(this, new TodoListViewModelFactory(repository)).get(TodoListViewModel.class);
     }
 
