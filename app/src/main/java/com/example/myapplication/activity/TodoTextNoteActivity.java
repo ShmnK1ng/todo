@@ -1,13 +1,8 @@
 package com.example.myapplication.activity;
 
 import static com.example.myapplication.activity.TodoListActivity.EXTRA_TODO;
-import static com.example.myapplication.utilities.AlertDialogUtils.INVALID_INPUT_ERROR;
-import static com.example.myapplication.utilities.AlertDialogUtils.NETWORK_ERROR;
-import static com.example.myapplication.utilities.AlertDialogUtils.SENDING_ERROR;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -21,11 +16,10 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.myapplication.R;
-import com.example.myapplication.data.TodoDbHelper;
-import com.example.myapplication.data.TodoDbHelperWrapper;
+import com.example.myapplication.data.TodoRepository;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.utilities.AlertDialogUtils;
-import com.example.myapplication.utilities.ConnectivityManagerWrapper;
+import com.example.myapplication.utilities.Repository;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModel;
 import com.example.myapplication.viewmodel.TodoTextNoteViewModelFactory;
 
@@ -94,27 +88,15 @@ public class TodoTextNoteActivity extends AppCompatActivity {
         }
     }
 
-    private void showAlertDialog(String id) {
-        AlertDialogUtils.showAlertDialog(this, id, dialog -> viewModel.resetEvent());
-    }
-
     private void viewModelInit() {
-        TodoDbHelper dbHelper = TodoDbHelper.getInstance(getApplicationContext());
-        TodoDbHelperWrapper dbHelperWrapper = new TodoDbHelperWrapper(dbHelper);
-        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        ConnectivityManagerWrapper connectivityManagerWrapper = new ConnectivityManagerWrapper(cm);
+        Repository repository = TodoRepository.getInstance(getApplicationContext());
         this.viewModel = new ViewModelProvider(this,
-                new TodoTextNoteViewModelFactory(dbHelperWrapper, connectivityManagerWrapper, dbHelperWrapper)).get(TodoTextNoteViewModel.class);
+                new TodoTextNoteViewModelFactory(repository)).get(TodoTextNoteViewModel.class);
     }
 
     private void setObservers() {
         viewModel.getTodoText().observe(this, this::setTodoText);
         viewModel.getSavedTodo().observe(this, this::sendTodoItem);
-        viewModel.checkConnectionState().observe(this, isNotConnected -> {
-            if (isNotConnected) {
-                showAlertDialog(NETWORK_ERROR);
-            }
-        });
         ProgressBar progressBar = findViewById(R.id.activity_todo_text_note_progressBar);
         viewModel.sendTodoEvent().observe(this, isTodoSent -> {
             if (isTodoSent) {
@@ -125,14 +107,9 @@ public class TodoTextNoteActivity extends AppCompatActivity {
                 sendTodoButton.setVisibility(View.VISIBLE);
             }
         });
-        viewModel.invalidInputEvent().observe(this, isInvalidTextInput -> {
-            if (isInvalidTextInput) {
-                showAlertDialog(INVALID_INPUT_ERROR);
-            }
-        });
-        viewModel.sendingErrorEvent().observe(this, isSendingError -> {
-            if (isSendingError) {
-                showAlertDialog(SENDING_ERROR);
+        viewModel.sendingErrorEvent().observe(this, todoListErrorMessage -> {
+            if (todoListErrorMessage != null) {
+                AlertDialogUtils.showAlertDialog(this, todoListErrorMessage, dialog -> viewModel.resetEvent());
             }
         });
     }

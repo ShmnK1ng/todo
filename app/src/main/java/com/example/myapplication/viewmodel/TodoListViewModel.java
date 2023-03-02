@@ -5,14 +5,9 @@ import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
 
 import com.example.myapplication.model.Todo;
-import com.example.myapplication.network.FirebaseInitRunnable;
-import com.example.myapplication.network.GetAppIDRunnable;
-import com.example.myapplication.network.GetTodoListDbRunnable;
-import com.example.myapplication.network.GetTodoListRunnable;
-import com.example.myapplication.utilities.AppIdentifier;
+import com.example.myapplication.utilities.AlertDialogUtils;
 import com.example.myapplication.utilities.Callback;
-import com.example.myapplication.utilities.ConnectionNetworkInfo;
-import com.example.myapplication.utilities.TodoDao;
+import com.example.myapplication.utilities.Repository;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,74 +18,30 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
     private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
-    private final MutableLiveData<Boolean> getTodoListError = new MutableLiveData<>();
+    private final MutableLiveData<AlertDialogUtils.Events> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
-    private final AppIdentifier appIdentifier;
-    private final TodoDao todoDAO;
-    private final Callback<List<Todo>> getTodoListDbCallback = new Callback<List<Todo>>() {
-        @Override
-        public void onFail() {
-            getTodoListError.postValue(true);
-        }
-
-        @Override
-        public void onSuccess(List<Todo> result) {
-            todoList.postValue(new ArrayList<>(result));
-        }
-    };
-    private final Callback<String> getIDCallback = new Callback<String>() {
-        @Override
-        public void onFail() {
-            getTodoListError.postValue(true);
-            getTodoList.postValue(false);
-        }
-
-        @Override
-        public void onSuccess(String result) {
-            getTodoList.postValue(false);
-        }
-    };
-
+    private final Repository repository;
     private final Callback<List<Todo>> getTodoListCallback = new Callback<List<Todo>>() {
         @Override
-        public void onFail() {
-            getTodoListError.postValue(true);
+        public void onFail(AlertDialogUtils.Events message) {
+            getTodoListError.postValue(message);
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
         }
 
         @Override
         public void onSuccess(List<Todo> result) {
-            todoList.postValue(new ArrayList<>(result));
+            if (result != null) {
+                todoList.postValue(new ArrayList<>(result));
+            }
             getTodoList.postValue(false);
             refreshTodoList.postValue(false);
         }
     };
 
-    private final Callback<String> appInitCallback = new Callback<String>() {
-        @Override
-        public void onFail() {
-            Thread onServerInitThread = new Thread(new FirebaseInitRunnable(getIDCallback, appIdentifier));
-            onServerInitThread.start();
-        }
-
-        @Override
-        public void onSuccess(String id) {
-            Thread getTodoListThread = new Thread(new GetTodoListRunnable(id, getTodoListCallback, todoDAO));
-            getTodoListThread.start();
-        }
-    };
-
-    public TodoListViewModel(AppIdentifier appIdentifier, ConnectionNetworkInfo connectionNetworkInfo, TodoDao todoDAO) {
-        this.appIdentifier = appIdentifier;
-        this.todoDAO = todoDAO;
-        if (connectionNetworkInfo.isConnected()) {
-            getTodoList.setValue(true);
-            appInit();
-        } else {
-            Thread getTodoListDb = new Thread(new GetTodoListDbRunnable(todoDAO, getTodoListDbCallback));
-            getTodoListDb.start();
-        }
+    public TodoListViewModel(Repository repository) {
+        this.repository = repository;
+        getTodoListFromServer();
     }
 
     public LiveData<Boolean> refreshTodoListEvent() {
@@ -113,7 +64,7 @@ public class TodoListViewModel extends ViewModel {
         return goToEditTodo;
     }
 
-    public LiveData<Boolean> getTodoListErrorEvent() {
+    public LiveData<AlertDialogUtils.Events> getTodoListErrorEvent() {
         return getTodoListError;
     }
 
@@ -144,18 +95,17 @@ public class TodoListViewModel extends ViewModel {
         goToEditTodo.setValue(null);
     }
 
-    public void appInit() {
-        Thread appInitThread = new Thread(new GetAppIDRunnable(appIdentifier, appInitCallback));
-        appInitThread.start();
+    public void getTodoListFromServer() {
+        getTodoList.setValue(true);
+        repository.getTodoList(getTodoListCallback);
     }
 
     public void resetGetTodoListErrorEvent() {
-        getTodoListError.setValue(false);
+        getTodoListError.setValue(null);
     }
 
     public void refreshRequest() {
-        Thread refreshTodoListThread = new Thread(new GetTodoListRunnable(appIdentifier.getID(), getTodoListCallback, todoDAO));
-        refreshTodoListThread.start();
+        repository.getTodoList(getTodoListCallback);
         refreshTodoList.setValue(true);
     }
 }

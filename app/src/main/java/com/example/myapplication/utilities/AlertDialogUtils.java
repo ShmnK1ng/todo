@@ -9,17 +9,15 @@ import com.example.myapplication.R;
 
 public class AlertDialogUtils {
 
-    public static final String NETWORK_ERROR = "network_error";
-    public static final String INVALID_INPUT_ERROR = "invalid_input_error";
-    public static final String SENDING_ERROR = "sending_error";
-    public static final String GET_TODO_LIST_ERROR = "get_todo_list_error";
-
-
-    public static void showAlertDialog(Context context, String id, DialogInterface.OnDismissListener onDismissListener) {
+    public static void showAlertDialog(Context context, Events id, DialogInterface.OnDismissListener onDismissListener) {
         AlertDialog alertDialog = new AlertDialog.Builder(context).create();
         String alertDialogTitle = null;
         String alertDialogMessage = null;
         switch (id) {
+            case SERVER_INIT_ERROR:
+                alertDialogTitle = context.getString(R.string.activity_todo_list_server_init_error_dialog_title);
+                alertDialogMessage = context.getString(R.string.activity_todo_list_firebase_init_error_dialog_message);
+                break;
             case NETWORK_ERROR:
                 alertDialogTitle = context.getString(R.string.activity_todo_text_note_network_error_dialog_title);
                 alertDialogMessage = context.getString(R.string.activity_todo_text_note_network_error_dialog_message);
@@ -43,5 +41,9 @@ public class AlertDialogUtils {
         );
         alertDialog.setOnDismissListener(onDismissListener);
         alertDialog.show();
+    }
+
+    public enum Events {
+        NETWORK_ERROR, INVALID_INPUT_ERROR, SENDING_ERROR, GET_TODO_LIST_ERROR, SERVER_INIT_ERROR, TODO_ADDED, TODO_EDITED
     }
 }
