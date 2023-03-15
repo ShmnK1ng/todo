@@ -21,5 +21,25 @@
     <dimen name="item_todo_text_padding">8dp</dimen>
     <dimen name="activity_todo_list_add_note_button_margin_end">16dp</dimen>
     <dimen name="activity_todo_list_add_note_button_margin_bottom">8dp</dimen>
-
+    <dimen name="fragment_todo_login_edit_text_email_margin_start">50dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_email_margin_end">50dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_min_height">48dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_constraint_width_max">450dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_password_margin_start">50dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_password_margin_end">50dp</dimen>
+    <dimen name="fragment_todo_login_card_view_margin">15dp</dimen>
+    <dimen name="fragment_todo_login_text_view_login_btn_margin_start">35dp</dimen>
+    <dimen name="fragment_todo_login_text_view_login_btn_margin_end">35dp</dimen>
+    <dimen name="fragment_todo_login_text_view_login_btn_text_size">20sp</dimen>
+    <dimen name="fragment_todo_login_text_view_create_account_text_size">20sp</dimen>
+    <dimen name="fragment_todo_login_text_view_create_account_margin_top">20dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_password_margin_start">50dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_password_margin_end">50dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_min_height">48dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_constraint_width_max">450dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_email_margin_start">50dp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_email_margin_end">50dp</dimen>
+    <dimen name="fragment_todo_registration_text_view_create_account_text_size">20sp</dimen>
+    <dimen name="fragment_todo_registration_edit_text_password_margin_top">270dp</dimen>
+    <dimen name="fragment_todo_login_edit_text_password_margin_top">270dp</dimen>
 </resources>

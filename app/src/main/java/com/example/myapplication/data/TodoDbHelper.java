@@ -9,13 +9,15 @@ import androidx.annotation.Nullable;
 public class TodoDbHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_TODO_LIST_ID_TABLE =
             "CREATE TABLE " + TodoListContract.TodoListID.TABLE_NAME + " (" + TodoListContract.TodoListID.COLUMN_PRIMARY_KEY +
-                    " TEXT PRIMARY KEY, " + TodoListContract.TodoListID.COLUMN_ID + " TEXT NOT NULL)";
+                    " INTEGER PRIMARY KEY, " + TodoListContract.TodoListID.COLUMN_ID + " TEXT NOT NULL UNIQUE)";
     private static final String DATABASE_NAME = "TodoList.db";
     private static final int DATABASE_VERSION = 1;
     private static volatile TodoDbHelper instance;
     private static final String SQL_CREATE_TODO_LIST_TABLE =
             "CREATE TABLE " + TodoListContract.TodoList.TABLE_NAME + " (" + TodoListContract.TodoList.COLUMN_TODO_ID
-                    + " TEXT PRIMARY KEY, " + TodoListContract.TodoList.COLUMN_TODO_TEXT + " TEXT NOT NULL)";
+                    + " TEXT PRIMARY KEY, " + TodoListContract.TodoList.COLUMN_TODO_TEXT + " TEXT NOT NULL, "
+                    + TodoListContract.TodoList.COLUMN_TODO_ACCOUNT_ID + " TEXT NOT NULL, FOREIGN KEY (" + (TodoListContract.TodoList.COLUMN_TODO_ACCOUNT_ID) + ") " +
+                    "REFERENCES " + TodoListContract.TodoListID.TABLE_NAME + " (" + TodoListContract.TodoListID.COLUMN_PRIMARY_KEY + "))";
 
     private TodoDbHelper(@Nullable Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

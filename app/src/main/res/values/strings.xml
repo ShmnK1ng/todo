@@ -9,11 +9,24 @@
     <string name="activity_todo_text_note_dialog_message">Please enter note text</string>
     <string name="activity_todo_text_note_dialog_button_tittle">OK</string>
     <string name="activity_todo_text_note_network_error_dialog_title">Network connection error</string>
+    <string name="activity_todo_login_error_dialog_title">Login error</string>
+    <string name="activity_todo_login_error_dialog_message">Make sure you have entered the correct email/password or registered</string>
     <string name="activity_todo_text_note_network_error_dialog_message">Please check your network connection</string>
     <string name="activity_todo_text_sending_message_error_dialog_title">Sending message error</string>
     <string name="activity_todo_text_sending_message_error_dialog_message">Failed to save message to server</string>
     <string name="activity_todo_list_get_todo_list_error_dialog_message">Failed to get notes from server</string>
     <string name="activity_todo_list_server_init_error_dialog_title">Server init error</string>
     <string name="activity_todo_list_firebase_init_error_dialog_message">Server not response</string>
-
+    <string name="fragment_todo_login_edit_text_password_hint">Password</string>
+    <string name="fragment_todo_login_edit_text_email_hint">Email</string>
+    <string name="fragment_todo_login_image_view_content_description">TODO logo</string>
+    <string name="fragment_todo_login_text_view">Login</string>
+    <string name="fragment_todo_login_create_account">Create account</string>
+    <string name="fragment_todo_registration_edit_text_password_hint">Password</string>
+    <string name="fragment_todo_registration_edit_text_email_hint">Email</string>
+    <string name="fragment_todo_registration_image_view_content_description">TODO logo</string>
+    <string name="fragment_todo_registration_create_account">Create account</string>
+    <string name="todo_fragment_login_empty_field_error">Required</string>
+    <string name="todo_registration_error_message_title">Registration error</string>
+    <string name="todo_registration_error_message_text">Failed to registration on server</string>
 </resources>
