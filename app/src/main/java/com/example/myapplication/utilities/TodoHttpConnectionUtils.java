@@ -4,6 +4,7 @@ package com.example.myapplication.utilities;
 import com.example.myapplication.model.Todo;
 import com.example.myapplication.network.TodoJsonReader;
 import com.example.myapplication.network.TodoJsonWriter;
+import com.google.firebase.auth.FirebaseAuth;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -16,9 +17,8 @@ public class TodoHttpConnectionUtils implements TodoApi {
 
     public static final String PUT_TODO = "put_todo";
     public static final String POST_TODO = "post_todo";
-    public static final String SERVER_INIT = "server_init";
     public static final String GET_TODO_LIST = "get_todo_list";
-    private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/TodoList/";
+    private static final String FIREBASE_URL = "https://todoapp-f8a0e-default-rtdb.europe-west1.firebasedatabase.app/";
     private static final String REQUEST_POST = "POST";
     private static final String REQUEST_GET = "GET";
     private static final String REQUEST_PUT = "PUT";
@@ -27,7 +27,6 @@ public class TodoHttpConnectionUtils implements TodoApi {
     private HttpURLConnection httpURLConnection;
     private URL url;
     private String requestMethod;
-    private String appID;
     private boolean inputRequest;
     private boolean outputRequest;
 
@@ -35,20 +34,14 @@ public class TodoHttpConnectionUtils implements TodoApi {
         boolean isConnected = true;
         try {
             switch (requestConnectionMethod) {
-                case SERVER_INIT:
-                    url = new URL(FIREBASE_URL + ".json");
-                    requestMethod = REQUEST_POST;
-                    inputRequest = true;
-                    outputRequest = true;
-                    break;
                 case GET_TODO_LIST:
-                    url = new URL(FIREBASE_URL + appID + ".json");
+                    url = new URL(FIREBASE_URL + appID + "/.json");
                     requestMethod = REQUEST_GET;
                     inputRequest = true;
                     outputRequest = false;
                     break;
                 case POST_TODO:
-                    url = new URL(FIREBASE_URL + appID + ".json");
+                    url = new URL(FIREBASE_URL + appID + "/.json");
                     requestMethod = REQUEST_POST;
                     inputRequest = true;
                     outputRequest = true;
@@ -71,43 +64,55 @@ public class TodoHttpConnectionUtils implements TodoApi {
     }
 
     @Override
-    public String serverInit() {
-        if (connectToServer(SERVER_INIT, null, null)) {
-            try {
-                OutputStream outputStream = httpURLConnection.getOutputStream();
-                todoJsonWriter.writeInitJson(outputStream);
-                if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
-                    InputStream inputStream = httpURLConnection.getInputStream();
-                    appID = todoJsonReader.readJsonFromServer(inputStream);
-                } else {
-                    appID = null;
-                }
-            } catch (IOException e) {
-                appID = null;
-            } finally {
-                httpURLConnection.disconnect();
-            }
-        }
-        return appID;
+    public String getUserUID() {
+        return FirebaseAuth.getInstance().getUid();
     }
 
     @Override
-    public List<Todo> getTodoList(String appID) {
-        List<Todo> todoList = null;
+    public void userLogin(String login, String password, Callback<String> callback) {
+        FirebaseAuth.getInstance().signInWithEmailAndPassword(login, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(getUserUID());
+                    } else {
+                        callback.onFail(AlertDialogUtils.Events.SERVER_LOGIN_ERROR);
+                    }
+                });
+    }
+
+    @Override
+    public void userLogout() {
+        FirebaseAuth.getInstance().signOut();
+    }
+
+    @Override
+    public void createUser(String login, String password, Callback<String> callback) {
+        FirebaseAuth.getInstance().createUserWithEmailAndPassword(login, password)
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+                        callback.onSuccess(null);
+                    } else {
+                        callback.onFail(AlertDialogUtils.Events.SERVER_REGISTRATION_ERROR);
+                    }
+                });
+    }
+
+    @Override
+    public void getTodoList(String appID, Callback<List<Todo>> callback) {
         if (connectToServer(GET_TODO_LIST, appID, null)) {
             try {
                 if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
                     InputStream inputStream = httpURLConnection.getInputStream();
-                    todoList = todoJsonReader.readJsonStream(inputStream);
+                    List<Todo> todoList = todoJsonReader.readJsonStream(inputStream);
                     inputStream.close();
+                    callback.onSuccess(todoList);
                 }
             } catch (IOException e) {
-                todoList = null;
+                callback.onFail(AlertDialogUtils.Events.GET_TODO_LIST_ERROR);
             } finally {
                 httpURLConnection.disconnect();
             }
         }
-        return todoList;
     }
 
     @Override
@@ -123,9 +128,9 @@ public class TodoHttpConnectionUtils implements TodoApi {
             try {
                 OutputStream outputStream = httpURLConnection.getOutputStream();
                 todoJsonWriter.writeJson(outputStream, todo);
+                InputStream inputStream = httpURLConnection.getInputStream();
                 if (requestMethod.equals(POST_TODO)) {
                     if (HttpURLConnection.HTTP_OK == httpURLConnection.getResponseCode()) {
-                        InputStream inputStream = httpURLConnection.getInputStream();
                         String todoUID = todoJsonReader.readJsonFromServer(inputStream);
                         todo.setUid(todoUID);
                         savingStatus = AlertDialogUtils.Events.TODO_ADDED;

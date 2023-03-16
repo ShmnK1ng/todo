@@ -48,22 +48,30 @@ public final class TodoJsonReader {
 
     private List<Todo> readTodoList(JsonReader reader) throws IOException {
         List<Todo> todoList = new ArrayList<>();
-
-        while (reader.hasNext()) {
-            if (reader.peek() == JsonToken.BEGIN_OBJECT) {
-                reader.beginObject();
-            }
-            if (reader.peek() == JsonToken.END_OBJECT) {
-                reader.endObject();
-            }
-            if (reader.peek() == JsonToken.NAME) {
-                String name = reader.nextName();
-                if (!name.equals(NAME_TODO_TEXT) && !name.equals(NAME_INIT_MESSAGE)) {
-                    String todoText = readTextTodo(reader);
-                    Todo todo = new Todo(name, todoText);
-                    todoList.add(todo);
-                } else {
+        reader.setLenient(true);
+        if (reader.peek() != JsonToken.NULL) {
+            while (reader.hasNext()) {
+                if (reader.peek() == JsonToken.BEGIN_OBJECT) {
+                    reader.beginObject();
+                }
+                if (reader.peek() == JsonToken.END_OBJECT) {
+                    reader.endObject();
+                }
+                if (reader.peek() == JsonToken.NAME) {
+                    String name = reader.nextName();
+                    if (!name.equals(NAME_TODO_TEXT) && !name.equals(NAME_INIT_MESSAGE)) {
+                        String todoText = readTextTodo(reader);
+                        Todo todo = new Todo(name, todoText);
+                        todoList.add(todo);
+                    } else {
+                        reader.skipValue();
+                    }
+                }
+                if (reader.peek() == JsonToken.NULL) {
                     reader.skipValue();
+                    if (reader.peek() == JsonToken.END_DOCUMENT) {
+                        break;
+                    }
                 }
             }
         }

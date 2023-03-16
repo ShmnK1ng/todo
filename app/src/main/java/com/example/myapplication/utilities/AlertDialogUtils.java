@@ -14,6 +14,14 @@ public class AlertDialogUtils {
         String alertDialogTitle = null;
         String alertDialogMessage = null;
         switch (id) {
+            case SERVER_REGISTRATION_ERROR:
+                alertDialogTitle = context.getString(R.string.todo_registration_error_message_title);
+                alertDialogMessage = context.getString(R.string.todo_registration_error_message_text);
+                break;
+            case SERVER_LOGIN_ERROR:
+                alertDialogTitle = context.getString(R.string.activity_todo_login_error_dialog_title);
+                alertDialogMessage = context.getString(R.string.activity_todo_login_error_dialog_message);
+                break;
             case SERVER_INIT_ERROR:
                 alertDialogTitle = context.getString(R.string.activity_todo_list_server_init_error_dialog_title);
                 alertDialogMessage = context.getString(R.string.activity_todo_list_firebase_init_error_dialog_message);
@@ -44,6 +52,7 @@ public class AlertDialogUtils {
     }
 
     public enum Events {
-        NETWORK_ERROR, INVALID_INPUT_ERROR, SENDING_ERROR, GET_TODO_LIST_ERROR, SERVER_INIT_ERROR, TODO_ADDED, TODO_EDITED
+        NETWORK_ERROR, INVALID_INPUT_ERROR, SENDING_ERROR, GET_TODO_LIST_ERROR, SERVER_INIT_ERROR, TODO_ADDED, TODO_EDITED, SERVER_LOGIN_ERROR,
+        SERVER_REGISTRATION_ERROR
     }
 }

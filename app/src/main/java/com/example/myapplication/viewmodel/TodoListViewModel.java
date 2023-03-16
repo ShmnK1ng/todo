@@ -18,6 +18,7 @@ public class TodoListViewModel extends ViewModel {
     private final MutableLiveData<ArrayList<Todo>> todoList = new MutableLiveData<>();
     private final MutableLiveData<Todo> goToEditTodo = new MutableLiveData<>();
     private final MutableLiveData<Boolean> getTodoList = new MutableLiveData<>();
+    private final MutableLiveData<Boolean> logOut = new MutableLiveData<>();
     private final MutableLiveData<AlertDialogUtils.Events> getTodoListError = new MutableLiveData<>();
     private final MutableLiveData<Boolean> refreshTodoList = new MutableLiveData<>();
     private final Repository repository;
@@ -64,6 +65,10 @@ public class TodoListViewModel extends ViewModel {
         return goToEditTodo;
     }
 
+    public LiveData<Boolean> logOutEvent() {
+        return logOut;
+    }
+
     public LiveData<AlertDialogUtils.Events> getTodoListErrorEvent() {
         return getTodoListError;
     }
@@ -107,5 +112,10 @@ public class TodoListViewModel extends ViewModel {
     public void refreshRequest() {
         repository.getTodoList(getTodoListCallback);
         refreshTodoList.setValue(true);
+    }
+
+    public void logoutClicked() {
+        repository.serverLogout();
+        logOut.setValue(true);
     }
 }

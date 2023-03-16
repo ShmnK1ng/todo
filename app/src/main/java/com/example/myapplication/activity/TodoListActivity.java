@@ -8,6 +8,7 @@ import android.widget.ProgressBar;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.StaggeredGridLayoutManager;
@@ -48,6 +49,7 @@ public class TodoListActivity extends AppCompatActivity {
         initRecyclerView();
         viewModelInit();
         setObservers();
+        setNavigationClickListener();
         addNoteButton = findViewById(R.id.activity_todo_list_add_note_button);
         addNoteButton.setOnClickListener(view -> viewModel.addTodoClicked());
         swipeRefreshLayout = findViewById(R.id.activity_todo_list_swipe_refresh_layout);
@@ -107,5 +109,15 @@ public class TodoListActivity extends AppCompatActivity {
             }
         });
         viewModel.refreshTodoListEvent().observe(this, refreshStarted -> swipeRefreshLayout.setRefreshing(refreshStarted));
+        viewModel.logOutEvent().observe(this, startLogout -> {
+            Intent logoutIntent = new Intent(this, TodoAuthenticationActivity.class);
+            startActivity(logoutIntent);
+            finish();
+        });
+    }
+
+    private void setNavigationClickListener() {
+        Toolbar toolbar = findViewById(R.id.activity_todo_list_toolbar);
+        toolbar.setNavigationOnClickListener(v -> viewModel.logoutClicked());
     }
 }
